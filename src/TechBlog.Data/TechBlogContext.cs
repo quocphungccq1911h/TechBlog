@@ -7,11 +7,8 @@ using TechBlog.Core.Domain.Identity;
 
 namespace TechBlog.Data
 {
-    public class TechBlogContext : IdentityDbContext<AppUser, AppRole, Guid>
+    public class TechBlogContext(DbContextOptions options) : IdentityDbContext<AppUser, AppRole, Guid>(options)
     {
-        public TechBlogContext(DbContextOptions options) : base(options)
-        {
-        }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<PostTag> PostTags { get; set; }
