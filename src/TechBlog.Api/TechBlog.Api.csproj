@@ -22,4 +22,8 @@
     <ProjectReference Include="..\TechBlog.Utilities\TechBlog.Utilities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

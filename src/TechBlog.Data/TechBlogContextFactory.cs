@@ -14,7 +14,6 @@ namespace TechBlog.Data
                 .AddJsonFile("appsettings.json")
                 .Build();
             var optionBuilder = new DbContextOptionsBuilder<TechBlogContext>();
-            Console.WriteLine(configuration.GetConnectionString(SystemConstants.ConnectionString.TechBlogDB));
             optionBuilder.UseSqlServer(configuration.GetConnectionString(SystemConstants.ConnectionString.TechBlogDB));
             return new TechBlogContext(optionBuilder.Options);
         }
