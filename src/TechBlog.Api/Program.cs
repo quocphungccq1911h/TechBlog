@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TechBlog.Api;
 using TechBlog.Core.Domain.Identity;
 using TechBlog.Data;
 using TechBlog.Utilities.Constants;
@@ -55,5 +56,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+// seed data
+app.MigrateDatabase();
 
 app.Run();
