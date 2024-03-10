@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TechBlog.Api;
 using TechBlog.Core.Domain.Identity;
+using TechBlog.Core.SeedWorks;
 using TechBlog.Data;
+using TechBlog.Data.SeedWorks;
 using TechBlog.Utilities.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 //Config DB Context and ASP.NET Core Identity
 builder.Services.AddDbContext<TechBlogContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.ConnectionString.TechBlogDB)));
@@ -35,6 +35,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = false;
 });
+
+// Add services to the container.
+builder.Services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //Default config for ASP.NET Core
 builder.Services.AddControllers();
