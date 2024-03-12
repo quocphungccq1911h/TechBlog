@@ -7,6 +7,7 @@ namespace TechBlog.Data.SeedWorks
     public class RepositoryBase<T, Key>(TechBlogContext context) : IRepository<T, Key> where T : class
     {
         private readonly DbSet<T> _dbSet = context.Set<T>();
+        protected readonly TechBlogContext _context = context;
 
         public void Add(T entity)
         {

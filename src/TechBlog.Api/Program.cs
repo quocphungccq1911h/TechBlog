@@ -4,6 +4,7 @@ using TechBlog.Api;
 using TechBlog.Core.Domain.Identity;
 using TechBlog.Core.SeedWorks;
 using TechBlog.Data;
+using TechBlog.Data.Repositories;
 using TechBlog.Data.SeedWorks;
 using TechBlog.Utilities.Constants;
 
@@ -39,6 +40,21 @@ builder.Services.Configure<IdentityOptions>(options =>
 // Add services to the container.
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Business services and repositories
+var services = typeof(PostRepository).Assembly.GetTypes()
+      .Where(x => x.GetInterfaces().Any(i => i.Name == typeof(IRepository<,>).Name)
+    && !x.IsAbstract && x.IsClass && !x.IsGenericType);
+
+foreach(Type service in services)
+{
+    var allInterface = service.GetInterfaces();
+    var directInterface = allInterface.Except(allInterface.SelectMany(x => x.GetInterfaces())).FirstOrDefault();
+    if( directInterface != null)
+    {
+        builder.Services.Add(new ServiceDescriptor(directInterface, service, ServiceLifetime.Scoped));
+    }
+}
 
 //Default config for ASP.NET Core
 builder.Services.AddControllers();
