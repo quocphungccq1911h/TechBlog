@@ -1,7 +1,10 @@
-﻿namespace TechBlog.Core.SeedWorks
+﻿using TechBlog.Core.Repositories;
+
+namespace TechBlog.Core.SeedWorks
 {
     public interface IUnitOfWork
     {
+        IPostRepository Posts { get; }
         Task<int> CompleteAsync();
     }
 }
