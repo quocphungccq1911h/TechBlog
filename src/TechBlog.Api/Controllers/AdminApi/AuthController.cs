@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -43,10 +42,10 @@ namespace TechBlog.Api.Controllers.AdminApi
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
                     new Claim(UserClaims.Id, user.Id.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserName ?? ""),
+                    new Claim(ClaimTypes.Name, user.UserName ?? ""),
                     new Claim(UserClaims.FirstName, user.FirstName),
                     new Claim(UserClaims.Roles, string.Join(";", roles)),
                     //new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
