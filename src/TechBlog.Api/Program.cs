@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using TechBlog.Api;
+using TechBlog.Core.ConfigOptions;
 using TechBlog.Core.Domain.Identity;
 using TechBlog.Core.Models.Content;
 using TechBlog.Core.SeedWorks;
@@ -58,8 +59,11 @@ foreach(Type service in services)
         builder.Services.Add(new ServiceDescriptor(directInterface, service, ServiceLifetime.Scoped));
     }
 }
-
+// auto mapper
 builder.Services.AddAutoMapper(typeof(PostInListDto));
+
+// author
+builder.Services.Configure<JwtTokenSettings>(builder.Configuration.GetSection(SystemConstants.Section.JwtTokenSettings));
 
 //Default config for ASP.NET Core
 builder.Services.AddControllers();

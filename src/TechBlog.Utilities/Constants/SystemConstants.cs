@@ -6,5 +6,9 @@
         {
             public const string TechBlogDB = "TechBlogDB";
         }
+        public static class Section
+        {
+            public const string JwtTokenSettings = "JwtTokenSettings";
+        }
     }
 }
