@@ -19,7 +19,7 @@ namespace TechBlog.Api.Controllers.AdminApi
     {
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly SignInManager<AppUser> _signInManager = signInManager;
-        private ITokenService _tokenService = tokenService;
+        private readonly ITokenService _tokenService = tokenService;
 
         [HttpPost]
         public async Task<ActionResult<AuthenticatedResult>> Login([FromBody] LoginRequest request)
