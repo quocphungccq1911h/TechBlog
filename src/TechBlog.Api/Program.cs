@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using TechBlog.Api;
+using TechBlog.Api.Fillters;
 using TechBlog.Api.Services;
 using TechBlog.Core.ConfigOptions;
 using TechBlog.Core.Domain.Identity;
