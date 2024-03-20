@@ -15,6 +15,16 @@ using TechBlog.Data.SeedWorks;
 using TechBlog.Utilities.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
+var TechBlogCorsPolicy = "TechBlogCorsPolicy";
+
+// add cors
+builder.Services.AddCors(x => x.AddPolicy(TechBlogCorsPolicy, build =>
+{
+    build.AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithOrigins(builder.Configuration[SystemConstants.AppSetting.AllowedOrigins])
+    .AllowCredentials();
+}));
 
 //Config DB Context and ASP.NET Core Identity
 builder.Services.AddDbContext<TechBlogContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.ConnectionString.TechBlogDB)));
@@ -103,6 +113,8 @@ if (app.Environment.IsDevelopment())
         c.DisplayRequestDuration();
     });
 }
+
+app.UseCors(TechBlogCorsPolicy);
 
 app.UseHttpsRedirection();
 

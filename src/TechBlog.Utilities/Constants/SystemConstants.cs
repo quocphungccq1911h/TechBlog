@@ -10,5 +10,9 @@
         {
             public const string JwtTokenSettings = "JwtTokenSettings";
         }
+        public static class AppSetting
+        {
+            public const string AllowedOrigins = "AllowedOrigins";
+        }
     }
 }
