@@ -13,6 +13,7 @@ import {
 } from 'src/app/api/admin-api.service.generated';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { UrlConstants } from 'src/app/shared/constants/url.constants';
+import { TokenStorageService } from 'src/app/shared/services/token-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authApiClient: AdminApiAuthApiClient,
     private alertService: AlertService,
-    private router: Router
+    private router: Router,
+    private tokenService: TokenStorageService
   ) {
     this.loginForm = this.fb.group({
       userName: new FormControl('', Validators.required),
@@ -41,6 +43,9 @@ export class LoginComponent {
     this.authApiClient.login(loginRequest).subscribe({
       next: (res: AuthenticatedResult) => {
         // save access token and refresh token to localstorage
+        this.tokenService.saveToken(res.token);
+        this.tokenService.saveRefreshToken(res.refreshToken);
+        this.tokenService.saveUser(res);
         this.router.navigate([UrlConstants.HOME]);
         this.alertService.showSuccess('Dăng nhập thành công');
       },
