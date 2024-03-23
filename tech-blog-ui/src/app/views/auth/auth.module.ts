@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { Page404Component } from './page404/page404.component';
 import { Page500Component } from './page500/page500.component';
+import { Page403Component } from './page403/page403.component';
 import {
   ButtonModule,
   CardModule,
@@ -22,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     RegisterComponent,
     Page404Component,
     Page500Component,
+    Page403Component,
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormModule,
     GridModule,
     IconModule,
-    FormModule,
     FormsModule,
     ReactiveFormsModule,
     SpinnerModule,

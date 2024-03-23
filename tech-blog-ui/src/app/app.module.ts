@@ -85,7 +85,6 @@ const APP_CONTAINERS = [
     ListGroupModule,
     ProgressModule,
     BadgeModule,
-    ListGroupModule,
     CardModule,
     NgScrollbarModule,
     ToastModule,

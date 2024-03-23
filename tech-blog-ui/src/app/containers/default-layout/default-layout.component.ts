@@ -19,12 +19,18 @@ export class DefaultLayoutComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     const user = this.tokenService.getUser();
-    if (user === null) {
-      this.router.navigate([UrlConstants.LOGIN]);
-      return;
-    }
+    if (user == null) this.router.navigate([UrlConstants.LOGIN]);
     const permissions = JSON.parse(user.permissions);
+    if (permissions.length === 0)
+      this.router.navigate([UrlConstants.ACCESS_DENIED]);
     for (const element of navItems) {
+      if (
+        element.attributes &&
+        permissions.filter((x: any) => x === element.attributes['policyName'])
+          .length === 0
+      ) {
+        element.class = 'hidden';
+      }
       for (
         let childIndex = 0;
         childIndex < element.children?.length;
@@ -34,13 +40,13 @@ export class DefaultLayoutComponent implements OnInit {
           element.children[childIndex].attributes &&
           permissions.filter(
             (x: any) =>
-              x === element.children[childIndex].attributes['policyName']
-          ).length === 0
+              x == element.children[childIndex].attributes['policyName']
+          ).length == 0
         ) {
-          element.children[childIndex].class = 'hiden';
+          element.children[childIndex].class = 'hidden';
         }
       }
+      this.navItems.push(element);
     }
-    this.navItems = navItems;
   }
 }

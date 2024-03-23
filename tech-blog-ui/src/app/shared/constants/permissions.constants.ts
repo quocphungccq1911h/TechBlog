@@ -32,3 +32,7 @@ export class SeriesPermissions {
   public static readonly EDIT = 'Permissions.Series.Edit';
   public static readonly DELETE = 'Permissions.Series.Delete';
 }
+
+export class DashboardPermissions {
+  public static readonly VIEW = 'Permissions.Dashboard.View';
+}
