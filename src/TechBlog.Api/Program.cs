@@ -22,7 +22,7 @@ builder.Services.AddCors(x => x.AddPolicy(TechBlogCorsPolicy, build =>
 {
     build.AllowAnyMethod()
     .AllowAnyHeader()
-    .WithOrigins(builder.Configuration[SystemConstants.AppSetting.AllowedOrigins])
+    .WithOrigins(builder.Configuration[SystemConstants.AppSetting.AllowedOrigins] ?? "")
     .AllowCredentials();
 }));
 
@@ -58,11 +58,13 @@ builder.Services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Business services and repositories
+#pragma warning disable S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
 var services = typeof(PostRepository).Assembly.GetTypes()
       .Where(x => x.GetInterfaces().Any(i => i.Name == typeof(IRepository<,>).Name)
     && !x.IsAbstract && x.IsClass && !x.IsGenericType);
+#pragma warning restore S6605 // Collection-specific "Exists" method should be used instead of the "Any" extension
 
-foreach(Type service in services)
+foreach (Type service in services)
 {
     var allInterface = service.GetInterfaces();
     var directInterface = allInterface.Except(allInterface.SelectMany(x => x.GetInterfaces())).FirstOrDefault();
