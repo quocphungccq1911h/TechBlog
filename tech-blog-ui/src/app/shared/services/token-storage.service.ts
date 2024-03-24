@@ -25,6 +25,10 @@ export class TokenStorageService {
     }
   }
 
+  public getToken(): string | null {
+    return window.localStorage.getItem(TOKEN_KEY);
+  }
+
   public saveRefreshToken(token: string): void {
     window.localStorage.removeItem(REFRESHTOKEN_KEY);
     window.localStorage.setItem(REFRESHTOKEN_KEY, token);

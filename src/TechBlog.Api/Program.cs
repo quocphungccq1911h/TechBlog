@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
+using System.Text;
 using TechBlog.Api;
 using TechBlog.Api.Fillters;
 using TechBlog.Api.Services;
@@ -77,7 +80,7 @@ foreach (Type service in services)
 builder.Services.AddAutoMapper(typeof(PostInListDto));
 
 // author
-builder.Services.Configure<JwtTokenSettings>(builder.Configuration.GetSection(SystemConstants.Section.JwtTokenSettings));
+builder.Services.Configure<JwtTokenSettings>(builder.Configuration.GetSection(SystemConstants.JwtToken.JwtTokenSettings));
 builder.Services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -102,6 +105,22 @@ builder.Services.AddSwaggerGen(c =>
     c.ParameterFilter<SwaggerNullableParameterFilter>();
 });
 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(cfg =>
+{
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
+    cfg.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration[SystemConstants.JwtToken.JwtTokenSettings_Issuer],
+        ValidAudience = builder.Configuration[SystemConstants.JwtToken.JwtTokenSettings_Issuer],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration[SystemConstants.JwtToken.JwtTokenSettings_Key]!))
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -120,6 +139,7 @@ app.UseCors(TechBlogCorsPolicy);
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

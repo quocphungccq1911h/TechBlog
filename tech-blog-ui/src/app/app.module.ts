@@ -44,14 +44,18 @@ import { IconModule, IconSetService } from '@coreui/icons-angular';
 import {
   ADMIN_API_BASE_URL,
   AdminApiAuthApiClient,
+  AdminApiTestApiClient,
+  AdminApiTokenApiClient,
 } from './api/admin-api.service.generated';
 import { environment } from './../environments/environment';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AlertService } from './shared/services/alert.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenStorageService } from './shared/services/token-storage.service';
 import { AuthGuard } from './shared/auth.guard';
+import { GlobalHttpInterceptorService } from 'src/app/shared/interceptors/error-handler.interceptor';
+import { TokenInterceptor } from 'src/app/shared/interceptors/token.interceptor';
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
@@ -97,6 +101,16 @@ const APP_CONTAINERS = [
       provide: LocationStrategy,
       useClass: HashLocationStrategy,
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: GlobalHttpInterceptorService,
+      multi: true,
+    },
     IconSetService,
     Title,
     MessageService,
@@ -104,6 +118,8 @@ const APP_CONTAINERS = [
     AdminApiAuthApiClient,
     TokenStorageService,
     AuthGuard,
+    AdminApiTokenApiClient,
+    AdminApiTestApiClient,
   ],
   bootstrap: [AppComponent],
 })

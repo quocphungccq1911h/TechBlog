@@ -18,7 +18,7 @@ export class AuthGuard {
     activateRoute: ActivatedRouteSnapshot,
     routerState: RouterStateSnapshot
   ): boolean {
-    let requirePolicy = activateRoute.data['requirePolicy'] as string;
+    let requirePolicy = activateRoute.data['requiredPolicy'] as string;
     const loggedInUser = this.tokenService.getUser();
     if (loggedInUser) {
       const listPermission = JSON.parse(loggedInUser.permissions);
