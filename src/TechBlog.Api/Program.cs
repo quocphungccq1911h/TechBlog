@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text;
 using TechBlog.Api;
+using TechBlog.Api.Authorization;
 using TechBlog.Api.Fillters;
 using TechBlog.Api.Services;
 using TechBlog.Core.ConfigOptions;
@@ -20,6 +22,8 @@ using TechBlog.Utilities.Constants;
 var builder = WebApplication.CreateBuilder(args);
 var TechBlogCorsPolicy = "TechBlogCorsPolicy";
 
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 // add cors
 builder.Services.AddCors(x => x.AddPolicy(TechBlogCorsPolicy, build =>
 {

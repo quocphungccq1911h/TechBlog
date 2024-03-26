@@ -5,6 +5,7 @@ import {
   RoleDto,
   RoleDtoPagedResult,
 } from 'src/app/api/admin-api.service.generated';
+import { CommonConstants } from 'src/app/shared/constants/common.constants';
 
 @Component({
   selector: 'app-role',
@@ -16,8 +17,8 @@ export class RoleComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
 
   //Paging variables
-  public pageIndex: number = 1;
-  public pageSize: number = 10;
+  public pageIndex: number = CommonConstants.pageIndex;
+  public pageSize: number = CommonConstants.pageSize;
   public totalCount: number;
 
   //Business variables
@@ -45,13 +46,11 @@ export class RoleComponent implements OnInit, OnDestroy {
         next: (response: RoleDtoPagedResult) => {
           this.items = response.result;
           this.totalCount = response.rowCount;
-
-          this.toggleBlockUI(false);
         },
         error: (e) => {
           console.log(e);
-          this.toggleBlockUI(false);
         },
+        complete: () => this.toggleBlockUI(false),
       });
   }
   showAddModal() {}
@@ -59,7 +58,11 @@ export class RoleComponent implements OnInit, OnDestroy {
   showEditModal() {}
   showPermissionModal(id: string, name: string) {}
 
-  pageChanged(event: any): void {}
+  pageChanged(event: any): void {
+    this.pageIndex = event.page;
+    this.pageSize = event.rows;
+    this.loadData();
+  }
 
   private toggleBlockUI(enabled: boolean) {
     if (enabled) {

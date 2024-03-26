@@ -37,16 +37,16 @@ namespace TechBlog.Api.Controllers.AdminApi
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user is null || !user.IsActive || user.LockoutEnabled)
             {
-                return Unauthorized();
+                return NotFound();
             }
             var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, true);
             if (!result.Succeeded)
             {
-                return Unauthorized();
+                return NotFound();
             }
             //Authorization
             var roles = await _userManager.GetRolesAsync(user);
-            var permissions = await this.GetPermissionsByUserIdAsync(user.Id.ToString());
+            var permissions = await GetPermissionsByUserIdAsync(user.Id.ToString());
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
