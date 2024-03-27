@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -13,6 +13,9 @@ export class RolesDetailComponent implements OnInit, OnDestroy {
   public blockedPanelDetail: boolean = false;
   public saveBtnName: string;
   public btnDisabled: boolean = false;
+  selectedEntity = {} as 
+
+  constructor(private fb: FormBuilder) {}
 
   ngOnDestroy(): void {
     throw new Error('Method not implemented.');
@@ -31,6 +34,14 @@ export class RolesDetailComponent implements OnInit, OnDestroy {
   };
 
   saveChange() {}
+
+  buildForm() {
+    this.form = this.fb.group({
+        name: new FormControl(
+            this.se
+        )
+    })
+  }
 
   private toogleBlockUI(enabled: boolean) {
     if (enabled) {
