@@ -6,6 +6,8 @@ import {
   RoleDtoPagedResult,
 } from 'src/app/api/admin-api.service.generated';
 import { CommonConstants } from 'src/app/shared/constants/common.constants';
+import { DialogService } from 'primeng/dynamicdialog';
+import { RolesDetailComponent } from './roles-detail.component';
 
 @Component({
   selector: 'app-role',
@@ -25,7 +27,10 @@ export class RoleComponent implements OnInit, OnDestroy {
   public selectedItems: RoleDto[] = [];
   public items: RoleDto[];
   public keyword: string = '';
-  constructor(private roleService: AdminApiRoleApiClient) {}
+  constructor(
+    private roleService: AdminApiRoleApiClient,
+    private dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -53,7 +58,15 @@ export class RoleComponent implements OnInit, OnDestroy {
         complete: () => this.toggleBlockUI(false),
       });
   }
-  showAddModal() {}
+
+  showAddModal() {
+    const ref = this.dialogService.open(RolesDetailComponent, {
+      header: 'Thêm mới quyền',
+      width: '70%',
+    });
+    console.log(ref);
+  }
+
   deleteItems() {}
   showEditModal() {}
   showPermissionModal(id: string, name: string) {}

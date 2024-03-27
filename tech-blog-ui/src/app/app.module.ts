@@ -57,6 +57,7 @@ import { TokenStorageService } from './shared/services/token-storage.service';
 import { AuthGuard } from './shared/auth.guard';
 import { GlobalHttpInterceptorService } from 'src/app/shared/interceptors/error-handler.interceptor';
 import { TokenInterceptor } from 'src/app/shared/interceptors/token.interceptor';
+import { DialogService } from 'primeng/dynamicdialog';
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
@@ -122,6 +123,7 @@ const APP_CONTAINERS = [
     AdminApiTokenApiClient,
     AdminApiTestApiClient,
     AdminApiRoleApiClient,
+    DialogService,
   ],
   bootstrap: [AppComponent],
 })
