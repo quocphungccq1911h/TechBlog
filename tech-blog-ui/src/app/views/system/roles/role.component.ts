@@ -6,8 +6,11 @@ import {
   RoleDtoPagedResult,
 } from 'src/app/api/admin-api.service.generated';
 import { CommonConstants } from 'src/app/shared/constants/common.constants';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import { RolesDetailComponent } from './roles-detail.component';
+import { AlertService } from 'src/app/shared/services/alert.service';
+import { MessageConstants } from 'src/app/shared/constants/messages.constants';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-role',
@@ -27,9 +30,12 @@ export class RoleComponent implements OnInit, OnDestroy {
   public selectedItems: RoleDto[] = [];
   public items: RoleDto[];
   public keyword: string = '';
+
   constructor(
     private roleService: AdminApiRoleApiClient,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private alertService: AlertService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -62,13 +68,80 @@ export class RoleComponent implements OnInit, OnDestroy {
   showAddModal() {
     const ref = this.dialogService.open(RolesDetailComponent, {
       header: 'Thêm mới quyền',
-      width: '70%',
+      width: '50%',
     });
-    console.log(ref);
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: RoleDto) => {
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.CREATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData();
+      }
+    });
   }
 
-  deleteItems() {}
-  showEditModal() {}
+  showEditModal() {
+    if (this.selectedItems.length === 0) {
+      this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
+      return;
+    }
+    const id = this.selectedItems[0].id;
+    const ref = this.dialogService.open(RolesDetailComponent, {
+      data: {
+        id: id,
+      },
+      header: 'Cập nhật quyền',
+      width: '50%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: RoleDto) => {
+      this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+      this.selectedItems = [];
+      this.loadData();
+    });
+  }
+
+  deleteItems() {
+    if (this.selectedItems.length === 0) {
+      this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
+      return;
+    }
+    let ids = [];
+    this.selectedItems.forEach((element: RoleDto) => {
+      ids.push(element.id);
+    });
+
+    this.confirmationService.confirm({
+      message: MessageConstants.CONFIRM_DELETE_MSG,
+      accept: () => {
+        this.deleteItemConfirm(ids);
+      },
+    });
+  }
+
+  deleteItemConfirm(ids: any[]) {
+    this.toggleBlockUI(true);
+
+    this.roleService
+      .deleteRoles(ids)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: () => {
+          this.alertService.showSuccess(MessageConstants.DELETED_OK_MSG);
+          this.loadData();
+          this.selectedItems = [];
+        },
+        error: () => {},
+        complete: () => this.toggleBlockUI(false),
+      });
+  }
+
   showPermissionModal(id: string, name: string) {}
 
   pageChanged(event: any): void {

@@ -5,13 +5,10 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-validation-message',
   templateUrl: './validation-message.component.html',
 })
-export class ValidationMessageComponent implements OnInit {
+export class ValidationMessageComponent {
   @Input() entityForm: FormGroup;
   @Input() fieldName: string;
   @Input() validationMessages: any;
 
   constructor() {}
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
 }

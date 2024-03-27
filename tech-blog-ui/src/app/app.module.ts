@@ -35,7 +35,6 @@ import {
   ProgressModule,
   SharedModule,
   SidebarModule,
-  SpinnerModule,
   TabsModule,
   UtilitiesModule,
 } from '@coreui/angular';
@@ -50,14 +49,16 @@ import {
 } from './api/admin-api.service.generated';
 import { environment } from './../environments/environment';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { AlertService } from './shared/services/alert.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenStorageService } from './shared/services/token-storage.service';
 import { AuthGuard } from './shared/auth.guard';
 import { GlobalHttpInterceptorService } from 'src/app/shared/interceptors/error-handler.interceptor';
 import { TokenInterceptor } from 'src/app/shared/interceptors/token.interceptor';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { UtilityService } from './shared/services/utility.service';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
@@ -95,7 +96,8 @@ const APP_CONTAINERS = [
     NgScrollbarModule,
     ToastModule,
     HttpClientModule,
-    SpinnerModule,
+    ConfirmDialogModule,
+    DynamicDialogModule,
   ],
   providers: [
     { provide: ADMIN_API_BASE_URL, useValue: environment.API_URL },
@@ -124,6 +126,8 @@ const APP_CONTAINERS = [
     AdminApiTestApiClient,
     AdminApiRoleApiClient,
     DialogService,
+    UtilityService,
+    ConfirmationService,
   ],
   bootstrap: [AppComponent],
 })

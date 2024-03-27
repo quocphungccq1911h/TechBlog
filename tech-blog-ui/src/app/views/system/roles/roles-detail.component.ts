@@ -1,6 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Subject, takeUntil } from 'rxjs';
+import {
+  AdminApiRoleApiClient,
+  RoleDto,
+} from 'src/app/api/admin-api.service.generated';
+import { UtilityService } from 'src/app/shared/services/utility.service';
 
 @Component({
   templateUrl: 'roles-detail.component.html',
@@ -13,16 +24,36 @@ export class RolesDetailComponent implements OnInit, OnDestroy {
   public blockedPanelDetail: boolean = false;
   public saveBtnName: string;
   public btnDisabled: boolean = false;
-  selectedEntity = {} as 
+  public closeBtnName: string;
+  selectedEntity = {} as RoleDto;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig,
+    private fb: FormBuilder,
+    private utilService: UtilityService,
+    private roleService: AdminApiRoleApiClient
+  ) {}
+  ngOnInit(): void {
+    this.buildForm();
+    if (!this.utilService.isEmpty(this.config?.data?.id)) {
+      this.loadDetail(this.config.data.id);
+      this.saveBtnName = 'Cập nhật';
+      this.closeBtnName = 'Hủy';
+    } else {
+      this.saveBtnName = 'Thêm';
+      this.closeBtnName = 'Đóng';
+    }
+  }
 
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    if (this.ref) {
+      this.ref.close();
+    }
+    this.ngUnsubscrise.next();
+    this.ngUnsubscrise.complete();
   }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+
   noSpecial: RegExp = /^[^<>*!_~]+$/;
   validationMessages = {
     name: [
@@ -33,14 +64,61 @@ export class RolesDetailComponent implements OnInit, OnDestroy {
     displayName: [{ type: 'required', message: 'Bạn phải tên hiển thị' }],
   };
 
-  saveChange() {}
-
   buildForm() {
     this.form = this.fb.group({
-        name: new FormControl(
-            this.se
-        )
-    })
+      name: new FormControl(
+        this.selectedEntity.name || null,
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(255),
+          Validators.minLength(3),
+        ])
+      ),
+      displayName: new FormControl(
+        this.selectedEntity.displayName || null,
+        Validators.required
+      ),
+    });
+  }
+
+  loadDetail(id: any) {
+    this.toogleBlockUI(true);
+    this.roleService
+      .getRoleById(id)
+      .pipe(takeUntil(this.ngUnsubscrise))
+      .subscribe({
+        next: (response: RoleDto) => {
+          this.selectedEntity = response;
+          this.buildForm();
+        },
+        error: (error) => console.log(error),
+        complete: () => this.toogleBlockUI(false),
+      });
+  }
+
+  saveChange() {
+    this.toogleBlockUI(true);
+    this.saveData();
+  }
+
+  private saveData() {
+    if (this.utilService.isEmpty(this.config.data?.id)) {
+      this.roleService
+        .createRole(this.form.value)
+        .pipe(takeUntil(this.ngUnsubscrise))
+        .subscribe(() => {
+          this.ref.close(this.form.value);
+          this.toogleBlockUI(false);
+        });
+    } else {
+      this.roleService
+        .updateRole(this.config.data.id, this.form.value)
+        .pipe(takeUntil(this.ngUnsubscrise))
+        .subscribe(() => {
+          this.toogleBlockUI(false);
+          this.ref.close(this.form.value);
+        });
+    }
   }
 
   private toogleBlockUI(enabled: boolean) {

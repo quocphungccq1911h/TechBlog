@@ -8,9 +8,9 @@ export class UtilityService {
     this._router = router;
   }
 
-  isEmpty(input: any) {
-    if (input === undefined || input === null || input === '') return false;
-    return true;
+  isEmpty(input: any): boolean {
+    if (input === undefined || input === null || input === '') return true;
+    return false;
   }
 
   convertDateTime(date: Date) {

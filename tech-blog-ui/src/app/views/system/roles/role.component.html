@@ -64,12 +64,12 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 10px">
+          <th scope="col" style="width: 10px">
             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
           </th>
-          <th>Tên</th>
-          <th>Mô tả</th>
-          <th></th>
+          <th scope="col">Tên</th>
+          <th scope="col">Mô tả</th>
+          <th scope="col"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-row>
