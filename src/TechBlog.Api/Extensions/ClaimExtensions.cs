@@ -33,7 +33,7 @@ namespace TechBlog.Api.Extensions
         public static async Task AddPermissionClaim(this RoleManager<AppRole> roleManager, AppRole role, string permission)
         {
             var allClaims = await roleManager.GetClaimsAsync(role);
-            if(allClaims.Any(x=>x.Type == "Permisson" && x.Value == permission))
+            if(!allClaims.Any(x=>x.Type == "Permisson" && x.Value == permission))
             {
                 await roleManager.AddClaimAsync(role, new Claim("Permisson", permission));
             }

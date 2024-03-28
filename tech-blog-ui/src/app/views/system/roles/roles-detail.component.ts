@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -26,6 +26,8 @@ export class RolesDetailComponent implements OnInit, OnDestroy {
   public btnDisabled: boolean = false;
   public closeBtnName: string;
   selectedEntity = {} as RoleDto;
+
+  formSavedEventEmitter: EventEmitter<any> = new EventEmitter();
 
   constructor(
     public ref: DynamicDialogRef,

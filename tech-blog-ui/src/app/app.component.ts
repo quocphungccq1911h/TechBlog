@@ -19,7 +19,7 @@ import { Title } from '@angular/platform-browser';
   `,
 })
 export class AppComponent implements OnInit {
-  title = 'TechBlog - Tin tức công nghẹ';
+  title = 'TechBlog - Tin tức công nghệ';
 
   constructor(
     private router: Router,
