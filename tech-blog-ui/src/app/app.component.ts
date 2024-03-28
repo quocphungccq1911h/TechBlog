@@ -9,11 +9,17 @@ import { Title } from '@angular/platform-browser';
   selector: 'app-root',
   template: `
     <p-toast position="top-right"></p-toast>
+    <p-confirmDialog
+      header="Xác nhận"
+      acceptLabel="Có"
+      rejectLabel="Không"
+      icon="pi pi-exclamation-triangle"
+    ></p-confirmDialog>
     <router-outlet></router-outlet>
   `,
 })
 export class AppComponent implements OnInit {
-  title = 'CoreUI Free Angular Admin Template';
+  title = 'TechBlog - Tin tức công nghẹ';
 
   constructor(
     private router: Router,

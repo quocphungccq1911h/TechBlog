@@ -65,10 +65,10 @@ export class RoleComponent implements OnInit, OnDestroy {
       });
   }
 
-  showAddModal() {
+  showAddModal(): void {
     const ref = this.dialogService.open(RolesDetailComponent, {
       header: 'Thêm mới quyền',
-      width: '50%',
+      width: '60%',
     });
     const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
     const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
@@ -83,7 +83,7 @@ export class RoleComponent implements OnInit, OnDestroy {
     });
   }
 
-  showEditModal() {
+  showEditModal(): void {
     if (this.selectedItems.length === 0) {
       this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
       return;
@@ -94,20 +94,22 @@ export class RoleComponent implements OnInit, OnDestroy {
         id: id,
       },
       header: 'Cập nhật quyền',
-      width: '50%',
+      width: '60%',
     });
     const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
     const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
     const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
     dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
     ref.onClose.subscribe((data: RoleDto) => {
-      this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
-      this.selectedItems = [];
-      this.loadData();
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData();
+      }
     });
   }
 
-  deleteItems() {
+  deleteItems(): void {
     if (this.selectedItems.length === 0) {
       this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
       return;
@@ -125,7 +127,7 @@ export class RoleComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteItemConfirm(ids: any[]) {
+  deleteItemConfirm(ids: any[]): void {
     this.toggleBlockUI(true);
 
     this.roleService
@@ -142,7 +144,9 @@ export class RoleComponent implements OnInit, OnDestroy {
       });
   }
 
-  showPermissionModal(id: string, name: string) {}
+  showPermissionModal(id: string, name: string) {
+    console.log(`${id} : ${name}`);
+  }
 
   pageChanged(event: any): void {
     this.pageIndex = event.page;

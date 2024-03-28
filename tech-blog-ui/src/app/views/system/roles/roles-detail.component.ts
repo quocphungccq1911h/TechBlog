@@ -47,9 +47,6 @@ export class RolesDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.ref) {
-      this.ref.close();
-    }
     this.ngUnsubscrise.next();
     this.ngUnsubscrise.complete();
   }

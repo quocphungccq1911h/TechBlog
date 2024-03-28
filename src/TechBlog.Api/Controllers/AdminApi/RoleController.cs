@@ -35,7 +35,7 @@ namespace TechBlog.Api.Controllers.AdminApi
         [HttpPut("{id}")]
         [ValidateModel]
         [Authorize(Permissions.Roles.Edit)]
-        public async Task<IActionResult> UpdateRole(Guid id,[FromBody] CreateUpdateRoleRequest request)
+        public async Task<IActionResult> UpdateRole(Guid id, [FromBody] CreateUpdateRoleRequest request)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
             if (role is null) return NotFound();
@@ -49,7 +49,7 @@ namespace TechBlog.Api.Controllers.AdminApi
         [Authorize(Permissions.Roles.Delete)]
         public async Task<IActionResult> DeleteRoles([FromQuery] Guid[] ids)
         {
-            foreach(var id in ids)
+            foreach (var id in ids)
             {
                 var role = await _roleManager.FindByIdAsync(id.ToString());
                 if (role is null) return NotFound();
@@ -63,8 +63,8 @@ namespace TechBlog.Api.Controllers.AdminApi
         public async Task<ActionResult<RoleDto>> GetRoleById(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
-            if(role is null) return NotFound();
-            return Ok(_mapper.Map<AppRole,  RoleDto>(role));
+            if (role is null) return NotFound();
+            return Ok(_mapper.Map<AppRole, RoleDto>(role));
         }
 
         [HttpGet]
@@ -73,12 +73,12 @@ namespace TechBlog.Api.Controllers.AdminApi
         public async Task<ActionResult<PagedResult<RoleDto>>> GetRolesAllPaging(string? keyword, int pageIndex = 1, int pageSize = 10)
         {
             var query = _roleManager.Roles;
-            if(!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query.Where(x=>x.Name!.Contains(keyword) || x.DisplayName.Contains(keyword));
+                query = query.Where(x => x.Name!.Contains(keyword) || x.DisplayName.Contains(keyword));
             }
             int totalRow = query.Count();
-            query.Skip((pageIndex - 1)* pageSize).Take(pageSize);
+            query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
             var data = await _mapper.ProjectTo<RoleDto>(query).ToListAsync();
             var paginationSet = new PagedResult<RoleDto>
