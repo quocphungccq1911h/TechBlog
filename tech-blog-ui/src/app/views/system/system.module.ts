@@ -18,6 +18,11 @@ import { TechBlogModule } from 'src/app/shared/modules/techblog-shared.module';
 import { RolesDetailComponent } from './roles/roles-detail.component';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { PermissionGrantComponent } from './roles/permission-grant.component';
+import { BadgeModule } from 'primeng/badge';
+import { SetPasswordComponent } from './users/set-password.component';
+import { UserDetailComponent } from './users/user-detail.component';
+import { ImageModule } from 'primeng/image';
+import { PickListModule } from 'primeng/picklist';
 
 @NgModule({
   imports: [
@@ -35,12 +40,17 @@ import { PermissionGrantComponent } from './roles/permission-grant.component';
     SharedModule,
     TechBlogModule,
     KeyFilterModule,
+    BadgeModule,
+    ImageModule,
+    PickListModule,
   ],
   declarations: [
     UserComponent,
     RoleComponent,
     RolesDetailComponent,
     PermissionGrantComponent,
+    SetPasswordComponent,
+    UserDetailComponent,
   ],
 })
 export class SystemModule {}

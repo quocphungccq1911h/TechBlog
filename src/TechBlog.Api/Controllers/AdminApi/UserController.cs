@@ -47,13 +47,12 @@ namespace TechBlog.Api.Controllers.AdminApi
             }
             int totalRow = await query.CountAsync();
             query.OrderByDescending(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-
             var pagedResponse = new PagedResult<UserDto>()
             {
                 Result = await _mapper.ProjectTo<UserDto>(query).ToListAsync(),
                 PageSize = pageSize,
                 CurrentPage = pageIndex,
-                PageCount = totalRow
+                RowCount = totalRow
             };
             return Ok(pagedResponse);
         }

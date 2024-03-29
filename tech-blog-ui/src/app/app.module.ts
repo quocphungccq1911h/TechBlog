@@ -46,6 +46,7 @@ import {
   AdminApiTestApiClient,
   AdminApiTokenApiClient,
   AdminApiRoleApiClient,
+  AdminApiUserApiClient,
 } from './api/admin-api.service.generated';
 import { environment } from './../environments/environment';
 import { ToastModule } from 'primeng/toast';
@@ -128,6 +129,7 @@ const APP_CONTAINERS = [
     DialogService,
     UtilityService,
     ConfirmationService,
+    AdminApiUserApiClient,
   ],
   bootstrap: [AppComponent],
 })
