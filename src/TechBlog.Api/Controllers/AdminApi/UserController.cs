@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TechBlog.Api.Extensions;
 using TechBlog.Api.Fillters;
 using TechBlog.Core.Domain.Identity;
 using TechBlog.Core.Models;
@@ -70,7 +71,91 @@ namespace TechBlog.Api.Controllers.AdminApi
             return BadRequest(string.Join("<br>", result.Errors.Select(x => x.Description)));
         }
 
+        [HttpPut("{id}")]
+        [ValidateModel]
+        [Authorize(Permissions.Users.Edit)]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user is null) return NotFound();
+            _mapper.Map<UpdateUserRequest, AppUser>(request);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(string.Join("<br>", result.Errors.Select(x => x.Description)));
+            }
+            return Ok();
+        }
 
+        [HttpPut("password-change-current-user")]
+        [ValidateModel]
+        public async Task<IActionResult> ChangeMyPassword([FromBody] ChangeMyPasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(User.GetUserId().ToString());
+            if (user is null) return NotFound();
+            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+            if (result.Succeeded) return Ok();
+            return BadRequest(string.Join("<br>", result.Errors.Select(x => x.Description)));
+        }
 
+        [HttpDelete]
+        [Authorize(Permissions.Users.Delete)]
+        public async Task<IActionResult> DeleteUsers([FromQuery] string[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user is null) return NotFound();
+                await _userManager.DeleteAsync(user);
+            }
+            return Ok();
+        }
+
+        [HttpPost("set-password/{id}")]
+        [ValidateModel]
+        [Authorize(Permissions.Users.Edit)]
+        public async Task<IActionResult> SetPassword(Guid id, [FromBody] SetPasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user is null) return NotFound();
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return Ok();
+            return BadRequest(string.Join("<br>", result.Errors.Select(x => x.Description)));
+        }
+
+        [HttpPost("change-email/{id}")]
+        [Authorize(Permissions.Users.Edit)]
+        public async Task<IActionResult> ChangeEmail(Guid id, [FromBody] ChangeEmailRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user is null) return NotFound();
+            var token = await _userManager.GenerateChangeEmailTokenAsync(user, request.Email);
+            var result = await _userManager.ChangeEmailAsync(user, request.Email, token);
+            if (!result.Succeeded)
+                return BadRequest(string.Join("<br>", result.Errors.Select(x => x.Description)));
+            return Ok();
+        }
+
+        [HttpPut("{id}/assign-users")]
+        [Authorize(Permissions.Users.Edit)]
+        public async Task<IActionResult> AssignRoleToUser(string id, [FromBody] string[] roles)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null) return NotFound();
+            var currentRole = await _userManager.GetRolesAsync(user);
+            var removedResult = await _userManager.RemoveFromRolesAsync(user, currentRole);
+            var addedResult = await _userManager.AddToRolesAsync(user, roles);
+            if (!addedResult.Succeeded || !removedResult.Succeeded)
+            {
+                List<IdentityError> addedErrorLst = addedResult.Errors.ToList();
+                List<IdentityError> removeErrorLst = removedResult.Errors.ToList();
+                var errorList = new List<IdentityError>();
+                errorList.AddRange(addedErrorLst);
+                errorList.AddRange(removeErrorLst);
+                return BadRequest(string.Join("<br/>", errorList.Select(x => x.Description)));
+            }
+            return Ok();
+        }
     }
 }
