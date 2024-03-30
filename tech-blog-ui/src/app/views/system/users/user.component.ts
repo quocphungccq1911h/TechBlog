@@ -12,6 +12,7 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 import { SetPasswordComponent } from './set-password.component';
 import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { UserDetailComponent } from './user-detail.component';
+import { RoleAssignComponent } from './role-assign.component';
 
 @Component({
   selector: 'app-user',
@@ -62,19 +63,91 @@ export class UserComponent implements OnInit, OnDestroy {
         complete: () => this.toggleBlockUI(false),
       });
   }
-  pageChanged(event: any): void {}
+  pageChanged(event: any): void {
+    this.pageIndex = event.page;
+    this.pageSize = event.rows;
+    this.loadData();
+  }
 
   showAddModal(): void {
     const ref = this.dialogService.open(UserDetailComponent, {
       header: 'Thêm mới người dùng',
       width: '60%',
     });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((response: UserDto) => {
+      if (response) {
+        this.alertService.showSuccess(MessageConstants.CREATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData();
+      }
+    });
   }
-  showEditModal() {}
+  showEditModal() {
+    if (this.selectedItems.length === 0) {
+      this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
+      return;
+    }
+    const id = this.selectedItems[0].id;
+    const ref = this.dialogService.open(UserDetailComponent, {
+      data: {
+        id: id,
+      },
+      header: 'Cập nhật người dùng',
+      width: '60%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: UserDto) => {
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData(data.id);
+      }
+    });
+  }
 
-  deleteItems() {}
+  deleteItems() {
+    if (this.selectedItems.length === 0) {
+      this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
+      return;
+    }
+    let ids = [];
+    this.selectedItems.forEach((element) => {
+      ids.push(element.id);
+    });
+    this.confirmationService.confirm({
+      message: MessageConstants.CONFIRM_DELETE_MSG,
+      accept: () => {
+        this.deleteItemsConfirm(ids);
+      },
+    });
+  }
 
-  assignRole(id: any): void {}
+  assignRole(id: any): void {
+    const ref = this.dialogService.open(RoleAssignComponent, {
+      data: {
+        id: id,
+      },
+      header: 'Gán quyền',
+      width: '60%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((result: boolean) => {
+      if (result) {
+        this.alertService.showSuccess(MessageConstants.ROLE_ASSIGN_SUCCESS_MSG);
+        this.loadData();
+      }
+    });
+  }
   changeEmail(id: any): void {}
   setPassword(id: string): void {
     const ref = this.dialogService.open(SetPasswordComponent, {
@@ -100,12 +173,23 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   private toggleBlockUI(enabled: boolean) {
-    if (enabled == true) {
+    if (enabled) {
       this.blockedPanel = true;
     } else {
       setTimeout(() => {
         this.blockedPanel = false;
       }, 1000);
     }
+  }
+  private deleteItemsConfirm(ids: string[]) {
+    this.toggleBlockUI(true);
+    this.userManager.deleteUsers(ids).subscribe({
+      next: () => {
+        this.alertService.showSuccess(MessageConstants.DELETED_OK_MSG);
+        this.loadData();
+        this.selectedItems = [];
+      },
+      complete: () => this.toggleBlockUI(false),
+    });
   }
 }

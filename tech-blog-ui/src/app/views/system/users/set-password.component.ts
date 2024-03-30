@@ -47,7 +47,7 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
   // Validate
   noSpecial: RegExp = /^[^<>*!_~]+$/;
   validationMessages = {
-    passsword: [
+    newPassword: [
       { type: 'required', message: 'Bạn phải nhập mật khẩu' },
       {
         type: 'pattern',
@@ -87,7 +87,7 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
             ),
           ])
         ),
-        confirmNewPassword: new FormControl(null),
+        confirmNewPassword: new FormControl(null, Validators.required),
       },
       passwordMatchingValidatior
     );

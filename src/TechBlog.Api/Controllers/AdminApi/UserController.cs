@@ -77,7 +77,7 @@ namespace TechBlog.Api.Controllers.AdminApi
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user is null) return NotFound();
-            _mapper.Map<UpdateUserRequest, AppUser>(request);
+            _mapper.Map(request, user);
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
