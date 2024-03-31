@@ -13,6 +13,7 @@ import { SetPasswordComponent } from './set-password.component';
 import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { UserDetailComponent } from './user-detail.component';
 import { RoleAssignComponent } from './role-assign.component';
+import { ChangeEmailComponent } from './change-email.component';
 
 @Component({
   selector: 'app-user',
@@ -40,7 +41,8 @@ export class UserComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService
   ) {}
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
   ngOnInit(): void {
     this.loadData();
@@ -64,7 +66,8 @@ export class UserComponent implements OnInit, OnDestroy {
       });
   }
   pageChanged(event: any): void {
-    this.pageIndex = event.page;
+    console.log(event);
+    this.pageIndex = event.page + 1;
     this.pageSize = event.rows;
     this.loadData();
   }
@@ -142,13 +145,35 @@ export class UserComponent implements OnInit, OnDestroy {
     const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
     dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
     ref.onClose.subscribe((result: boolean) => {
+      console.log(result);
       if (result) {
         this.alertService.showSuccess(MessageConstants.ROLE_ASSIGN_SUCCESS_MSG);
         this.loadData();
       }
     });
   }
-  changeEmail(id: any): void {}
+  changeEmail(id: string): void {
+    const ref = this.dialogService.open(ChangeEmailComponent, {
+      data: {
+        id: id,
+      },
+      header: 'Đặt lại Email',
+      width: '60%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((result: boolean) => {
+      if (result) {
+        this.alertService.showSuccess(
+          MessageConstants.CHANGE_EMAIL_SUCCCESS_MSG
+        );
+        this.selectedItems = [];
+        this.loadData();
+      }
+    });
+  }
   setPassword(id: string): void {
     const ref = this.dialogService.open(SetPasswordComponent, {
       data: {

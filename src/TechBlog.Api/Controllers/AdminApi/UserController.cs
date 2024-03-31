@@ -46,7 +46,7 @@ namespace TechBlog.Api.Controllers.AdminApi
                 );
             }
             int totalRow = await query.CountAsync();
-            query.OrderByDescending(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            query = query.OrderByDescending(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize);
             var pagedResponse = new PagedResult<UserDto>()
             {
                 Result = await _mapper.ProjectTo<UserDto>(query).ToListAsync(),
@@ -142,8 +142,8 @@ namespace TechBlog.Api.Controllers.AdminApi
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user is null) return NotFound();
-            var currentRole = await _userManager.GetRolesAsync(user);
-            var removedResult = await _userManager.RemoveFromRolesAsync(user, currentRole);
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var removedResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
             var addedResult = await _userManager.AddToRolesAsync(user, roles);
             if (!addedResult.Succeeded || !removedResult.Succeeded)
             {
