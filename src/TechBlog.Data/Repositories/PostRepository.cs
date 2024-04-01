@@ -8,13 +8,10 @@ using TechBlog.Data.SeedWorks;
 
 namespace TechBlog.Data.Repositories
 {
-    public class PostRepository : RepositoryBase<Post, Guid>, IPostRepository
+    public class PostRepository(TechBlogContext context, IMapper mapper) : RepositoryBase<Post, Guid>(context), IPostRepository
     {
-        private readonly IMapper _mapper;
-        public PostRepository(TechBlogContext context, IMapper mapper) : base(context)
-        {
-            _mapper = mapper;
-        }
+        private readonly IMapper _mapper = mapper;
+
         public Task<List<Post>> GetPopularPostsAsync(int count)
         {
             return _context.Posts.OrderByDescending(x => x.ViewCount).Take(count).ToListAsync();

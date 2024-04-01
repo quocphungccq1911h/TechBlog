@@ -2,43 +2,40 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import {
-  AvatarModule,
-  ButtonGroupModule,
-  ButtonModule,
-  CardModule,
-  FormModule,
-  GridModule,
-  NavModule,
-  ProgressModule,
-  TableModule,
-  TabsModule
-} from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { ChartjsModule } from '@coreui/angular-chartjs';
 
 import { ContentRoutingModule } from './content-routing.module';
+import { PostCategoryComponent } from './post-categories/post-category.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { BlockUIModule } from 'primeng/blockui';
+import { PaginatorModule } from 'primeng/paginator';
+import { PanelModule } from 'primeng/panel';
+import { BadgeModule } from 'primeng/badge';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 @NgModule({
   imports: [
     ContentRoutingModule,
-    CardModule,
-    NavModule,
     IconModule,
-    TabsModule,
     CommonModule,
-    GridModule,
-    ProgressModule,
     ReactiveFormsModule,
-    ButtonModule,
-    FormModule,
-    ButtonModule,
-    ButtonGroupModule,
     ChartjsModule,
-    AvatarModule,
+    ProgressSpinnerModule,
+    BlockUIModule,
+    PaginatorModule,
+    PanelModule,
+    BadgeModule,
+    CheckboxModule,
     TableModule,
+    InputTextModule,
+    ButtonModule,
+    KeyFilterModule,
   ],
-  declarations: []
+  declarations: [PostCategoryComponent],
 })
-export class ContentModule {
-}
+export class ContentModule {}

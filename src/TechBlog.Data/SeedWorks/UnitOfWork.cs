@@ -9,7 +9,9 @@ namespace TechBlog.Data.SeedWorks
     {
         private readonly TechBlogContext _context = context;
         public IPostRepository Posts { get; private set; } = new PostRepository(context, mapper);
-        
+
+        public IPostCategoryRepository PostCategory { get; private set; } = new PostCategoryRepository(context, mapper);
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
