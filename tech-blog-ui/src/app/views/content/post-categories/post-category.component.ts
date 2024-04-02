@@ -10,6 +10,8 @@ import { CommonConstants } from 'src/app/shared/constants/common.constants';
 import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { PostCategoryDetailComponent } from './post-category-detail.component';
+import { ConfirmationService } from 'primeng/api';
+import { PageEvent } from 'src/app/shared/models/page-event.model';
 
 @Component({
   templateUrl: 'post-category.component.html',
@@ -31,11 +33,13 @@ export class PostCategoryComponent implements OnInit, OnDestroy {
   constructor(
     private dialogService: DialogService,
     private postCategoryService: AdminApiPostCategoryApiClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnDestroy(): void {
-    console.log('Method not implemented.');
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
   ngOnInit(): void {
     this.loadData();
@@ -74,11 +78,64 @@ export class PostCategoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  showEditModal(): void {}
+  showEditModal(): void {
+    if (this.selectedItems.length === 0) {
+      this.alertService.showSuccess(MessageConstants.NOT_CHOOSE_ANY_RECORD);
+      return;
+    }
+    const ref = this.dialogService.open(PostCategoryDetailComponent, {
+      data: {
+        id: this.selectedItems[0].id,
+      },
+      header: 'Cập nhật loại bài viết',
+      width: '60%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((result: boolean) => {
+      if (result) {
+        this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData();
+      }
+    });
+  }
 
-  deleteItems(): void {}
+  deleteItems(): void {
+    if (this.selectedItems.length === 0) {
+      this.alertService.showError(MessageConstants.NOT_CHOOSE_ANY_RECORD);
+      return;
+    }
+    let ids = [];
+    this.selectedItems.forEach((e) => ids.push(e.id));
+    this.confirmationService.confirm({
+      message: MessageConstants.CONFIRM_DELETE_MSG,
+      accept: () => {
+        this.deleteItemsConfirm(ids);
+      },
+    });
+  }
 
-  pageChanged(event): void {}
+  deleteItemsConfirm(ids: string[]) {
+    this.toggleBlockUI(true);
+
+    this.postCategoryService.deletePostCategory(ids).subscribe({
+      next: () => {
+        this.alertService.showSuccess(MessageConstants.DELETED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData();
+      },
+      complete: () => this.toggleBlockUI(false),
+    });
+  }
+
+  pageChanged(event: PageEvent): void {
+    this.pageIndex = event.page;
+    this.pageSize = event.rows;
+    this.loadData();
+  }
 
   private toggleBlockUI(enabled: boolean) {
     if (enabled) {

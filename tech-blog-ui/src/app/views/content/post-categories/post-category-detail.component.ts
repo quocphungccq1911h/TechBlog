@@ -5,10 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  DynamicDialogComponent,
-  DynamicDialogConfig,
-} from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import {
   AdminApiPostCategoryApiClient,
@@ -33,7 +30,7 @@ export class PostCategoryDetailComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private postCategoryService: AdminApiPostCategoryApiClient,
     private config: DynamicDialogConfig,
-    private ref: DynamicDialogComponent,
+    private ref: DynamicDialogRef,
     private utilService: UtilityService
   ) {}
 
@@ -50,12 +47,41 @@ export class PostCategoryDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    throw new Error('Method not implements');
+    this.ngUnsubcribe.next();
+    this.ngUnsubcribe.complete();
   }
 
-  saveChange(): void {}
+  saveChange(): void {
+    this.toggleBlockUI(true);
+    this.saveData();
+  }
 
-  generateSlug(): void {}
+  saveData(): void {
+    if (this.utilService.isEmpty(this.config.data?.id)) {
+      this.postCategoryService
+        .createPostCategory(this.form.value)
+        .pipe(takeUntil(this.ngUnsubcribe))
+        .subscribe(() => {
+          this.ref.close(this.form.value);
+          this.toggleBlockUI(false);
+        });
+    } else {
+      this.postCategoryService
+        .updatePostCategory(this.config.data?.id, this.form.value)
+        .pipe(takeUntil(this.ngUnsubcribe))
+        .subscribe(() => {
+          this.toggleBlockUI(false);
+          this.ref.close(this.form.value);
+        });
+    }
+  }
+
+  generateSlug(): void {
+    const slug = this.utilService.generateSlugWithTimestamp(
+      this.form.get('name').value
+    );
+    this.form.controls['slug'].setValue(slug);
+  }
 
   // Validate
   noSpecial: RegExp = /^[^<>*!_~]+$/;
