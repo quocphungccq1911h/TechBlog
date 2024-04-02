@@ -77,9 +77,7 @@ export class PostCategoryDetailComponent implements OnInit, OnDestroy {
   }
 
   generateSlug(): void {
-    const slug = this.utilService.generateSlugWithTimestamp(
-      this.form.get('name').value
-    );
+    const slug = this.utilService.generateSlug(this.form.get('name').value);
     this.form.controls['slug'].setValue(slug);
   }
 
@@ -112,7 +110,7 @@ export class PostCategoryDetailComponent implements OnInit, OnDestroy {
   buidForm(): void {
     this.form = this.fb.group({
       name: new FormControl(
-        this.selectedEntity || null,
+        this.selectedEntity.name || null,
         Validators.compose([
           Validators.required,
           Validators.minLength(3),

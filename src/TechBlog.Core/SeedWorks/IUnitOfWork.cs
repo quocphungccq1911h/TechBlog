@@ -6,6 +6,7 @@ namespace TechBlog.Core.SeedWorks
     {
         IPostRepository Posts { get; }
         IPostCategoryRepository PostCategory { get; }
+        ISeriesRepository Series { get; }
         Task<int> CompleteAsync();
     }
 }

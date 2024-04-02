@@ -85,6 +85,8 @@ builder.Services.AddAutoMapper(typeof(PostInListDto));
 
 // author
 builder.Services.Configure<JwtTokenSettings>(builder.Configuration.GetSection(SystemConstants.JwtToken.JwtTokenSettings));
+builder.Services.Configure<MediaSettings>(builder.Configuration.GetSection(SystemConstants.Media.MediaSetting));
+
 builder.Services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -138,6 +140,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         c.DisplayRequestDuration();
     });
 }
+
+app.UseStaticFiles();
 
 app.UseCors(TechBlogCorsPolicy);
 
