@@ -39,7 +39,7 @@ namespace TechBlog.Api.Controllers.AdminApi
 
             if (!string.IsNullOrEmpty(keyword))
             {
-                query.Where(x => x.FirstName.Contains(keyword)
+                query = query.Where(x => x.FirstName.Contains(keyword)
                     || x.UserName!.Contains(keyword)
                     || x.Email!.Contains(keyword)
                     || x.PhoneNumber!.Contains(keyword)

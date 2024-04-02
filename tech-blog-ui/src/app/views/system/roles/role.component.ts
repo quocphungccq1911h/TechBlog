@@ -166,7 +166,7 @@ export class RoleComponent implements OnInit, OnDestroy {
     });
   }
 
-  pageChanged(event: any): void {
+  pageChanged(event): void {
     this.pageIndex = event.page;
     this.pageSize = event.rows;
     this.loadData();

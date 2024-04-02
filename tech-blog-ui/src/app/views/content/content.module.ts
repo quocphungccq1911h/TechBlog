@@ -7,6 +7,8 @@ import { ChartjsModule } from '@coreui/angular-chartjs';
 
 import { ContentRoutingModule } from './content-routing.module';
 import { PostCategoryComponent } from './post-categories/post-category.component';
+import { PostCategoryDetailComponent } from './post-categories/post-category-detail.component';
+
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BlockUIModule } from 'primeng/blockui';
 import { PaginatorModule } from 'primeng/paginator';
@@ -17,6 +19,7 @@ import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { TechBlogModule } from 'src/app/shared/modules/techblog-shared.module';
 
 @NgModule({
   imports: [
@@ -35,7 +38,8 @@ import { KeyFilterModule } from 'primeng/keyfilter';
     InputTextModule,
     ButtonModule,
     KeyFilterModule,
+    TechBlogModule,
   ],
-  declarations: [PostCategoryComponent],
+  declarations: [PostCategoryComponent, PostCategoryDetailComponent],
 })
 export class ContentModule {}

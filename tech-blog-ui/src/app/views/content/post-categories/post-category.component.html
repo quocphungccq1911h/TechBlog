@@ -67,13 +67,13 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 10px">
+            <th scope="col" style="width: 10px">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th>Tên</th>
-            <th>URL</th>
-            <th>Thứ tự</th>
-            <th style="width: 150px">Trạng thái</th>
+            <th scope="col">Tên</th>
+            <th scope="col">URL</th>
+            <th scope="col">Thứ tự</th>
+            <th scope="col" style="width: 150px">Trạng thái</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
