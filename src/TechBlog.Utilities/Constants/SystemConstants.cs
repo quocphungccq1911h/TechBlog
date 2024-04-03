@@ -12,6 +12,12 @@
             public const string JwtTokenSettings_Issuer = "JwtTokenSettings:Issuer";
             public const string JwtTokenSettings_Key = "JwtTokenSettings:Key";
         }
+
+        public static class Media
+        {
+            public const string MediaSetting = "MediaSetting";
+        }
+
         public static class AppSetting
         {
             public const string AllowedOrigins = "AllowedOrigins";

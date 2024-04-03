@@ -1,44 +1,101 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TechBlog.Core.Domain.Content;
+using TechBlog.Core.Domain.Identity;
 using TechBlog.Core.Models;
 using TechBlog.Core.Models.Content;
 using TechBlog.Core.Repositories;
+using TechBlog.Core.SeedWorks.Constants;
 using TechBlog.Data.SeedWorks;
 
 namespace TechBlog.Data.Repositories
 {
-    public class PostRepository(TechBlogContext context, IMapper mapper) : RepositoryBase<Post, Guid>(context), IPostRepository
+    public class PostRepository(TechBlogContext context, IMapper mapper, UserManager<AppUser> userManager) : RepositoryBase<Post, Guid>(context), IPostRepository
     {
         private readonly IMapper _mapper = mapper;
+        private readonly UserManager<AppUser> _userManager = userManager;
 
-        public Task<List<Post>> GetPopularPostsAsync(int count)
+        public Task Approve(Guid id, Guid currentUserId)
         {
-            return _context.Posts.OrderByDescending(x => x.ViewCount).Take(count).ToListAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task<PagedResult<PostInListDto>> GetPostsPagingAsync(string? keyword, Guid? categoryId, int pageIndex = 1, int pageSize = 10)
+        public Task<List<PostActivityLogDto>> GetActivityLogs(Guid id)
         {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PagedResult<PostInListDto>> GetAllPaging(string? keyword, Guid currentUserId, Guid? categoryId, int pageIndex = 1, int pageSize = 10)
+        {
+            var user = await _userManager.FindByIdAsync(currentUserId.ToString());
+            if (user is null) throw new ArgumentException("User không tồn tại");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var canApprove = false;
+            if (roles.Contains(Roles.Admin))
+            {
+                canApprove = true;
+            }
+            else
+            {
+                canApprove = await _context.RoleClaims.AnyAsync(x => roles.Contains(x.RoleId.ToString()) && x.ClaimValue == Permissions.Posts.Approve);
+            }
             var query = _context.Posts.AsQueryable();
-            // If keywork filler is not null. Then fillter with keyword
-            if (!string.IsNullOrEmpty(keyword))
+            if(!string.IsNullOrEmpty(keyword))
             {
-                query.Where(x => x.Name.Contains(keyword));
+                query = query.Where(x=>x.Name.Contains(keyword));
             }
-            // if categoryId is not null. Then fillter with categoryId
-            if (categoryId.HasValue)
+            if(categoryId.HasValue)
             {
-                query.Where(x => x.CategoryId == categoryId.Value);
+                query = query.Where(x=>x.CategoryId == categoryId.Value);
             }
-            int totalRow = await query.CountAsync();
-            query.OrderByDescending(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-            return new PagedResult<PostInListDto>
+            if(!canApprove)
+            {
+                query = query.Where(x => x.AuthorUserId == currentUserId);
+            }
+            var totalRows = await query.CountAsync();
+
+            query = query.OrderByDescending(x => x.DateCreated)
+                         .Skip((pageIndex - 1) * pageSize)
+                         .Take(pageSize);
+            return new PagedResult<PostInListDto>()
             {
                 Result = await _mapper.ProjectTo<PostInListDto>(query).ToListAsync(),
                 CurrentPage = pageIndex,
-                RowCount = totalRow,
+                PageCount = totalRows,
                 PageSize = pageSize
             };
+        }
+
+        public Task<List<SeriesInListDto>> GetAllSeries(Guid postId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetReturnReason(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> HasPublishInLast(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsSlugAlreadyExisted(string slug, Guid? currentId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ReturnBack(Guid id, Guid currentUserId, string note)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SendToApprove(Guid id, Guid currentUserId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

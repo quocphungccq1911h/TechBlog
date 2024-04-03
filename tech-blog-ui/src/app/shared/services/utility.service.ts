@@ -49,15 +49,12 @@ export class UtilityService {
     return yyyymmdd;
   }
 
-  generateSlugWithTimestamp(text: string): string {
-    // Generate timestamp
-    const timestamp: string = new Date().toISOString().replace(/\D/g, '');
-
+  generateSlug(text: string): string {
     // Remove special characters and spaces from text
-    const slug: string = text.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
+    const slug: string = text.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
 
     // Combine slug and timestamp
-    const slugWithTimestamp: string = `${slug}_${timestamp}`;
+    const slugWithTimestamp: string = `${slug}`;
 
     return slugWithTimestamp;
   }
