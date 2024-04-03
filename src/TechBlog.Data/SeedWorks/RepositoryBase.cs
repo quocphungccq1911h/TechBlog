@@ -11,7 +11,9 @@ namespace TechBlog.Data.SeedWorks
 
         public void Add(T entity)
         {
+            #pragma warning disable CA2012 // Use ValueTasks correctly
             _dbSet.AddAsync(entity);
+            #pragma warning restore CA2012 // Use ValueTasks correctly
         }
 
         public void AddRange(IEnumerable<T> entities)
