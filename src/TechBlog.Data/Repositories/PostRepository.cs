@@ -18,8 +18,7 @@ namespace TechBlog.Data.Repositories
 
         public async Task Approve(Guid id, Guid currentUserId)
         {
-            var post = await _context.Posts.FindAsync(id);
-            if (post is null) throw new ArgumentException("Bài viết không tồn tại");
+            var post = await _context.Posts.FindAsync(id) ?? throw new ArgumentException("Bài viết không tồn tại");
             var user = await _context.Users.FindAsync(currentUserId);
             await _context.PostActivityLogs.AddAsync(new PostActivityLog
             {
@@ -35,16 +34,16 @@ namespace TechBlog.Data.Repositories
             _context.Posts.Update(post);
         }
 
-        public Task<List<PostActivityLogDto>> GetActivityLogs(Guid id)
+        public async Task<List<PostActivityLogDto>> GetActivityLogs(Guid id)
         {
-            throw new NotImplementedException();
+            var query = _context.PostActivityLogs.Where(x => x.PostId == id)
+                .OrderByDescending(x => x.DateCreated);
+            return await _mapper.ProjectTo<PostActivityLogDto>(query).ToListAsync();
         }
 
         public async Task<PagedResult<PostInListDto>> GetAllPaging(string? keyword, Guid currentUserId, Guid? categoryId, int pageIndex = 1, int pageSize = 10)
         {
-            var user = await _userManager.FindByIdAsync(currentUserId.ToString());
-            if (user is null) throw new ArgumentException("User không tồn tại");
-
+            var user = await _userManager.FindByIdAsync(currentUserId.ToString()) ?? throw new ArgumentException("User không tồn tại");
             var roles = await _userManager.GetRolesAsync(user);
             var canApprove = false;
             if (roles.Contains(Roles.Admin))
@@ -92,14 +91,18 @@ namespace TechBlog.Data.Repositories
             return await _mapper.ProjectTo<SeriesInListDto>(query).ToListAsync();
         }
 
-        public Task<string> GetReturnReason(Guid id)
+        public async Task<string> GetReturnReason(Guid id)
         {
-            throw new NotImplementedException();
+            var activity = await _context.PostActivityLogs
+                .Where(x => x.PostId == id && x.ToStatus == PostStatus.Rejected)
+                .FirstOrDefaultAsync();
+            return activity?.Note ?? "";
         }
 
-        public Task<bool> HasPublishInLast(Guid id)
+        public async Task<bool> HasPublishInLast(Guid id)
         {
-            throw new NotImplementedException();
+            var hasPublished = await _context.PostActivityLogs.CountAsync(x => x.PostId == id && x.ToStatus == PostStatus.Published);
+            return hasPublished > 0;
         }
 
         public Task<bool> IsSlugAlreadyExisted(string slug, Guid? currentId = null)
@@ -113,8 +116,7 @@ namespace TechBlog.Data.Repositories
 
         public async Task ReturnBack(Guid id, Guid currentUserId, string note)
         {
-            var post = await _context.Posts.FindAsync(id);
-            if (post is null) throw new ArgumentException("Bài viết không tồn tại");
+            var post = await _context.Posts.FindAsync(id) ?? throw new ArgumentException("Bài viết không tồn tại");
             var user = await _userManager.FindByIdAsync(currentUserId.ToString());
             await _context.PostActivityLogs.AddAsync(new PostActivityLog
             {
@@ -130,9 +132,21 @@ namespace TechBlog.Data.Repositories
             _context.Posts.Update(post);
         }
 
-        public Task SendToApprove(Guid id, Guid currentUserId)
+        public async Task SendToApprove(Guid id, Guid currentUserId)
         {
-            throw new NotImplementedException();
+            var post = await _context.Posts.FindAsync(id) ?? throw new ArgumentException("Bài viết không tồn tại");
+            var user = await _userManager.FindByIdAsync(currentUserId.ToString()) ?? throw new ArgumentException("User không tồn tại");
+            await _context.PostActivityLogs.AddAsync(new PostActivityLog
+            {
+                FromStatus = post.Status,
+                ToStatus = PostStatus.WaitingForApproval,
+                UserId = currentUserId,
+                PostId = post.Id,
+                UserName= user!.UserName,
+                Note = $"{user!.UserName} gửi bài chờ duyệt"
+            });
+            post.Status = PostStatus.WaitingForApproval;
+            _context.Posts.Update(post);
         }
     }
 }
