@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TechBlog.Core.Domain.Content;
 using TechBlog.Core.Domain.Identity;
+using TechBlog.Utilities.Constants;
 
 namespace TechBlog.Data
 {
@@ -31,6 +32,20 @@ namespace TechBlog.Data
 
             builder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens")
                .HasKey(x => new { x.UserId });
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker.Entries().Where(e => e.State == EntityState.Added);
+            foreach (var entry in entries)
+            {
+                var dateCreatedProp = entry.Entity.GetType().GetProperty(SystemConstants.DateCreatedField);
+                if(entry.State == EntityState.Added && dateCreatedProp != null)
+                {
+                    dateCreatedProp.SetValue(entry.Entity, DateTime.Now);
+                }
+            }
+            return base.SaveChangesAsync(cancellationToken);
         }
 
     }

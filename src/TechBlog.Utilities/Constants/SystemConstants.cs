@@ -22,5 +22,6 @@
         {
             public const string AllowedOrigins = "AllowedOrigins";
         }
+        public readonly static string DateCreatedField = "DateCreated";
     }
 }
