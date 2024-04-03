@@ -16,9 +16,23 @@ namespace TechBlog.Data.Repositories
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<AppUser> _userManager = userManager;
 
-        public Task Approve(Guid id, Guid currentUserId)
+        public async Task Approve(Guid id, Guid currentUserId)
         {
-            throw new NotImplementedException();
+            var post = await _context.Posts.FindAsync(id);
+            if (post is null) throw new ArgumentException("Bài viết không tồn tại");
+            var user = await _context.Users.FindAsync(currentUserId);
+            await _context.PostActivityLogs.AddAsync(new PostActivityLog
+            {
+                Id = Guid.NewGuid(),
+                FromStatus = post.Status,
+                ToStatus = PostStatus.Published,
+                UserId = currentUserId,
+                UserName = user!.UserName,
+                PostId = id,
+                Note = $"{user.UserName} duyệt bài"
+            });
+            post.Status = PostStatus.Published;
+            _context.Posts.Update(post);
         }
 
         public Task<List<PostActivityLogDto>> GetActivityLogs(Guid id)
@@ -42,15 +56,15 @@ namespace TechBlog.Data.Repositories
                 canApprove = await _context.RoleClaims.AnyAsync(x => roles.Contains(x.RoleId.ToString()) && x.ClaimValue == Permissions.Posts.Approve);
             }
             var query = _context.Posts.AsQueryable();
-            if(!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x=>x.Name.Contains(keyword));
+                query = query.Where(x => x.Name.Contains(keyword));
             }
-            if(categoryId.HasValue)
+            if (categoryId.HasValue)
             {
-                query = query.Where(x=>x.CategoryId == categoryId.Value);
+                query = query.Where(x => x.CategoryId == categoryId.Value);
             }
-            if(!canApprove)
+            if (!canApprove)
             {
                 query = query.Where(x => x.AuthorUserId == currentUserId);
             }
@@ -68,9 +82,14 @@ namespace TechBlog.Data.Repositories
             };
         }
 
-        public Task<List<SeriesInListDto>> GetAllSeries(Guid postId)
+        public async Task<List<SeriesInListDto>> GetAllSeries(Guid postId)
         {
-            throw new NotImplementedException();
+            var query = from pis in _context.PostInSeries
+                        join s in _context.Series
+                        on pis.SeriesId equals s.Id
+                        where pis.PostId == postId
+                        select s;
+            return await _mapper.ProjectTo<SeriesInListDto>(query).ToListAsync();
         }
 
         public Task<string> GetReturnReason(Guid id)
@@ -85,12 +104,30 @@ namespace TechBlog.Data.Repositories
 
         public Task<bool> IsSlugAlreadyExisted(string slug, Guid? currentId = null)
         {
-            throw new NotImplementedException();
+            if (currentId.HasValue)
+            {
+                return _context.Posts.AnyAsync(x => x.Slug == slug && x.Id != currentId.Value);
+            }
+            return _context.Posts.AnyAsync(x => x.Slug == slug);
         }
 
-        public Task ReturnBack(Guid id, Guid currentUserId, string note)
+        public async Task ReturnBack(Guid id, Guid currentUserId, string note)
         {
-            throw new NotImplementedException();
+            var post = await _context.Posts.FindAsync(id);
+            if (post is null) throw new ArgumentException("Bài viết không tồn tại");
+            var user = await _userManager.FindByIdAsync(currentUserId.ToString());
+            await _context.PostActivityLogs.AddAsync(new PostActivityLog
+            {
+                FromStatus = post.Status,
+                ToStatus = PostStatus.Rejected,
+                UserId = currentUserId,
+                UserName = user?.UserName,
+                PostId = post.Id,
+                Note = note
+            });
+
+            post.Status = PostStatus.Rejected;
+            _context.Posts.Update(post);
         }
 
         public Task SendToApprove(Guid id, Guid currentUserId)
