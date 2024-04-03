@@ -59,12 +59,5 @@ namespace TechBlog.Api.Controllers.AdminApi
             }
             return Ok(post);
         }
-        [HttpGet]
-        [Route("paging")]
-        public async Task<ActionResult<PagedResult<PostInListDto>>> GetPostsPaging(string? keyword, Guid? categoryId, int pageIndex, int pageSize = 10)
-        {
-            var result = await _unitOfWork.Posts.GetPostsPagingAsync(keyword, categoryId, pageIndex, pageSize);
-            return Ok(result);
-        }
     }
 }
