@@ -48,6 +48,8 @@ import {
   AdminApiRoleApiClient,
   AdminApiUserApiClient,
   AdminApiPostCategoryApiClient,
+  AdminApiPostApiClient,
+  AdminApiSeriesApiClient,
 } from './api/admin-api.service.generated';
 import { environment } from './../environments/environment';
 import { ToastModule } from 'primeng/toast';
@@ -61,6 +63,7 @@ import { TokenInterceptor } from 'src/app/shared/interceptors/token.interceptor'
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { UtilityService } from './shared/services/utility.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { UploadService } from '../app/shared/services/upload.service';
 
 const APP_CONTAINERS = [
   DefaultFooterComponent,
@@ -132,6 +135,9 @@ const APP_CONTAINERS = [
     ConfirmationService,
     AdminApiUserApiClient,
     AdminApiPostCategoryApiClient,
+    AdminApiPostApiClient,
+    UploadService,
+    AdminApiSeriesApiClient,
   ],
   bootstrap: [AppComponent],
 })

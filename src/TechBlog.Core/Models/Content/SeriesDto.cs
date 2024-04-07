@@ -14,9 +14,9 @@ namespace TechBlog.Core.Models.Content
 
         public string? Content { get; set; }
 
-        public class AutoMappeSeriesrProfiles : Profile
+        public class AutoMapperSeriesProfiles : Profile
         {
-            public AutoMappeSeriesrProfiles()
+            public AutoMapperSeriesProfiles()
             {
                 CreateMap<Series, SeriesDto>();
             }

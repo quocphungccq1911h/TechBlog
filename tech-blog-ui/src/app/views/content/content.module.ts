@@ -8,6 +8,10 @@ import { ChartjsModule } from '@coreui/angular-chartjs';
 import { ContentRoutingModule } from './content-routing.module';
 import { PostCategoryComponent } from './post-categories/post-category.component';
 import { PostCategoryDetailComponent } from './post-categories/post-category-detail.component';
+import { PostDetailComponent } from './posts/post-detail.component';
+import { PostSeriesComponent } from './posts/post-series.component';
+import { SeriesComponent } from './series/series.component';
+import { SeriesDetailComponent } from './series/series-detail.component';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BlockUIModule } from 'primeng/blockui';
@@ -20,6 +24,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { TechBlogModule } from 'src/app/shared/modules/techblog-shared.module';
+import { PostComponent } from './posts/post.component';
+import { ImageModule } from 'primeng/image';
+import { EditorModule } from 'primeng/editor';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 
 @NgModule({
   imports: [
@@ -29,17 +41,32 @@ import { TechBlogModule } from 'src/app/shared/modules/techblog-shared.module';
     ReactiveFormsModule,
     ChartjsModule,
     ProgressSpinnerModule,
+    PanelModule,
     BlockUIModule,
     PaginatorModule,
-    PanelModule,
     BadgeModule,
     CheckboxModule,
     TableModule,
-    InputTextModule,
-    ButtonModule,
     KeyFilterModule,
     TechBlogModule,
+    ButtonModule,
+    InputTextModule,
+    InputTextareaModule,
+    DropdownModule,
+    EditorModule,
+    InputNumberModule,
+    ImageModule,
+    AutoCompleteModule,
+    DynamicDialogModule,
   ],
-  declarations: [PostCategoryComponent, PostCategoryDetailComponent],
+  declarations: [
+    PostCategoryComponent,
+    PostCategoryDetailComponent,
+    PostComponent,
+    PostDetailComponent,
+    PostSeriesComponent,
+    SeriesComponent,
+    SeriesDetailComponent,
+  ],
 })
 export class ContentModule {}

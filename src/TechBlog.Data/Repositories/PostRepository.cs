@@ -76,7 +76,7 @@ namespace TechBlog.Data.Repositories
             {
                 Result = await _mapper.ProjectTo<PostInListDto>(query).ToListAsync(),
                 CurrentPage = pageIndex,
-                PageCount = totalRows,
+                RowCount = totalRows,
                 PageSize = pageSize
             };
         }

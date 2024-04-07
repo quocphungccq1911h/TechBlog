@@ -36,13 +36,17 @@ namespace TechBlog.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var entries = ChangeTracker.Entries().Where(e => e.State == EntityState.Added);
-            foreach (var entry in entries)
+            var entries = ChangeTracker
+               .Entries()
+               .Where(e => e.State == EntityState.Added);
+
+            foreach (var entityEntry in entries)
             {
-                var dateCreatedProp = entry.Entity.GetType().GetProperty(SystemConstants.DateCreatedField);
-                if(entry.State == EntityState.Added && dateCreatedProp != null)
+                var dateCreatedProp = entityEntry.Entity.GetType().GetProperty(SystemConstants.DateCreatedField);
+                if (entityEntry.State == EntityState.Added
+                    && dateCreatedProp != null)
                 {
-                    dateCreatedProp.SetValue(entry.Entity, DateTime.Now);
+                    dateCreatedProp.SetValue(entityEntry.Entity, DateTime.Now);
                 }
             }
             return base.SaveChangesAsync(cancellationToken);
