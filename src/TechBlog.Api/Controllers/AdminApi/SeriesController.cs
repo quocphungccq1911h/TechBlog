@@ -82,7 +82,7 @@ namespace TechBlog.Api.Controllers.AdminApi
 
         [HttpGet("{id}")]
         [Authorize(Permissions.Series.View)]
-        public async Task<ActionResult<SeriesInListDto>> GetSeriesById(Guid id)
+        public async Task<ActionResult<SeriesDto>> GetSeriesById(Guid id)
         {
             var series = await _unitOfWork.Series.GetByIdAsync(id);
             if (series is null) return NotFound();

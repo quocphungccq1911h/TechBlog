@@ -1965,7 +1965,7 @@ export class AdminApiSeriesApiClient {
     /**
      * @return Success
      */
-    getSeriesById(id: string): Observable<SeriesInListDto> {
+    getSeriesById(id: string): Observable<SeriesDto> {
         let url_ = this.baseUrl + "/api/admin/Series/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1987,14 +1987,14 @@ export class AdminApiSeriesApiClient {
                 try {
                     return this.processGetSeriesById(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<SeriesInListDto>;
+                    return _observableThrow(e) as any as Observable<SeriesDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<SeriesInListDto>;
+                return _observableThrow(response_) as any as Observable<SeriesDto>;
         }));
     }
 
-    protected processGetSeriesById(response: HttpResponseBase): Observable<SeriesInListDto> {
+    protected processGetSeriesById(response: HttpResponseBase): Observable<SeriesDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2005,7 +2005,7 @@ export class AdminApiSeriesApiClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SeriesInListDto.fromJS(resultData200);
+            result200 = SeriesDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3940,6 +3940,82 @@ export interface IRoleDtoPagedResult {
     additionalData?: string | undefined;
     pageCount?: number;
     result?: RoleDto[] | undefined;
+}
+
+export class SeriesDto implements ISeriesDto {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    slug?: string | undefined;
+    isActive?: boolean;
+    sortOrder?: number;
+    seoKeywords?: string | undefined;
+    ownerUserId?: string;
+    seoDescription?: string | undefined;
+    thumbnail?: string | undefined;
+    content?: string | undefined;
+
+    constructor(data?: ISeriesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.slug = _data["slug"];
+            this.isActive = _data["isActive"];
+            this.sortOrder = _data["sortOrder"];
+            this.seoKeywords = _data["seoKeywords"];
+            this.ownerUserId = _data["ownerUserId"];
+            this.seoDescription = _data["seoDescription"];
+            this.thumbnail = _data["thumbnail"];
+            this.content = _data["content"];
+        }
+    }
+
+    static fromJS(data: any): SeriesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SeriesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["slug"] = this.slug;
+        data["isActive"] = this.isActive;
+        data["sortOrder"] = this.sortOrder;
+        data["seoKeywords"] = this.seoKeywords;
+        data["ownerUserId"] = this.ownerUserId;
+        data["seoDescription"] = this.seoDescription;
+        data["thumbnail"] = this.thumbnail;
+        data["content"] = this.content;
+        return data;
+    }
+}
+
+export interface ISeriesDto {
+    id?: string;
+    name?: string | undefined;
+    description?: string | undefined;
+    slug?: string | undefined;
+    isActive?: boolean;
+    sortOrder?: number;
+    seoKeywords?: string | undefined;
+    ownerUserId?: string;
+    seoDescription?: string | undefined;
+    thumbnail?: string | undefined;
+    content?: string | undefined;
 }
 
 export class SeriesInListDto implements ISeriesInListDto {
