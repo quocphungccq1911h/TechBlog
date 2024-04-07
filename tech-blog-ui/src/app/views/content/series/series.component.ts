@@ -1,14 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogComponent } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import {
   AdminApiSeriesApiClient,
+  SeriesDto,
   SeriesInListDto,
   SeriesInListDtoPagedResult,
 } from 'src/app/api/admin-api.service.generated';
 import { CommonConstants } from 'src/app/shared/constants/common.constants';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { SeriesDetailComponent } from './series-detail.component';
+import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 
 @Component({
   templateUrl: 'series.component.html',
@@ -57,7 +60,23 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   showPosts(): void {}
 
-  showAddModal(): void {}
+  showAddModal(): void {
+    const ref = this.dialogService.open(SeriesDetailComponent, {
+      header: 'Thêm mới series bài viết',
+      width: '80%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: SeriesDto) => {
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.CREATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData();
+      }
+    });
+  }
 
   showEditModal(): void {}
 

@@ -36,7 +36,7 @@ namespace TechBlog.Data.Repositories
             var totalRow = await query.CountAsync();
 
             query = query.OrderByDescending(x => x.DateCreated)
-                   .Skip((pageSize - 1) * pageIndex)
+                   .Skip((pageIndex - 1) * pageSize)
                    .Take(pageSize);
 
             return new PagedResult<SeriesInListDto>
