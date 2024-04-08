@@ -38,7 +38,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.ngUnsubcribe.next();
+    this.ngUnsubcribe.complete();
   }
   ngOnInit(): void {
     this.loadData();
@@ -64,6 +65,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
     const ref = this.dialogService.open(SeriesDetailComponent, {
       header: 'Thêm mới series bài viết',
       width: '80%',
+      position: 'top-right',
     });
     const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
     const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
@@ -82,7 +84,9 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   deleteItems(): void {}
 
-  pageChanged(event: any) {}
+  pageChanged(event: any) {
+    console.log(event);
+  }
 
   private toggleBlockUI(enabled: boolean) {
     if (enabled) {

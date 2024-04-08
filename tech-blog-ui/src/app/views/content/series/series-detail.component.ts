@@ -11,6 +11,7 @@ import {
   AdminApiSeriesApiClient,
   SeriesDto,
 } from 'src/app/api/admin-api.service.generated';
+import { UploadService } from 'src/app/shared/services/upload.service';
 import { UtilityService } from 'src/app/shared/services/utility.service';
 import { environment } from 'src/environments/environment';
 
@@ -33,7 +34,8 @@ export class SeriesDetailComponent implements OnInit, OnDestroy {
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
     private seriesApiClient: AdminApiSeriesApiClient,
-    private utilService: UtilityService
+    private utilService: UtilityService,
+    private uploadService: UploadService
   ) {}
 
   // Validate
@@ -112,7 +114,17 @@ export class SeriesDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFileChange(event: any): void {}
+  onFileChange(event: any): void {
+    if (event.target.files && event.target.files.length) {
+      this.uploadService.uploadImage('post', event.target.files).subscribe({
+        next: (response: any) => {
+          this.form.controls['thumbnail'].setValue(response.path);
+          this.thumbnailImage = environment.API_URL + response.path;
+        },
+        error: (err) => console.log(err),
+      });
+    }
+  }
 
   private toggleBlockUI(enabled: boolean) {
     if (enabled) {
@@ -149,6 +161,7 @@ export class SeriesDetailComponent implements OnInit, OnDestroy {
         Validators.required
       ),
       content: new FormControl(this.selectedEntity.content || null),
+      isActive: new FormControl(this.selectedEntity.isActive || null),
       thumbnail: new FormControl(this.selectedEntity.thumbnail || null),
     });
     if (this.selectedEntity.thumbnail) {

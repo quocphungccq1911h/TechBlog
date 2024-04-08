@@ -81,7 +81,7 @@ namespace TechBlog.Api.Controllers.AdminApi
                 query = query.Where(x => x.Name!.Contains(keyword) || x.DisplayName.Contains(keyword));
             }
             int totalRow = query.Count();
-            query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
             var data = await _mapper.ProjectTo<RoleDto>(query).ToListAsync();
             var paginationSet = new PagedResult<RoleDto>
