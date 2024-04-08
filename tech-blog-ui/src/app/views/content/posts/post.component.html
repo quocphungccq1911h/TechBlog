@@ -50,12 +50,12 @@
           </div>
           <div class="col">
             <p-dropdown
-              [options]="postCategories"
+              [options]="postCate"
               (onChange)="loadData()"
               [style]="{ width: '100%' }"
               placeholder="Chọn danh mục"
               [showClear]="true"
-              [(ngModel)]="selectedPostCategory"
+              [(ngModel)]="categoryId"
             >
             </p-dropdown>
           </div>

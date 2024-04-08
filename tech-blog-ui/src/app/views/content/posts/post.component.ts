@@ -16,6 +16,11 @@ import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { ConfirmationService } from 'primeng/api';
 import { PostSeriesComponent } from './post-series.component';
 
+interface PostCategoryClient {
+  value: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
@@ -35,8 +40,8 @@ export class PostComponent implements OnInit, OnDestroy {
   public selectedItems: PostInListDto[] = [];
   public items: PostInListDto[];
   public categoryId?: string = null;
-  public postCategories: any[] = [];
-  public selectedPostCategory: any;
+  public postCategories: PostCategoryClient[] = [];
+  public postCate: PostCategoryClient[] = [];
 
   constructor(
     private postApiClient: AdminApiPostApiClient,
@@ -121,7 +126,6 @@ export class PostComponent implements OnInit, OnDestroy {
   loadPostCategories() {
     this.postCategoryApiClient
       .getAllPostCategory()
-      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((response: PostCategoryDto[]) => {
         response.forEach((element) => {
           this.postCategories.push({
@@ -129,6 +133,7 @@ export class PostComponent implements OnInit, OnDestroy {
             label: element.name,
           });
         });
+        this.postCate = this.postCategories;
       });
   }
 
