@@ -5,8 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { values } from 'lodash-es';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import {
   AdminApiPostApiClient,
@@ -26,13 +25,15 @@ export class PostSeriesComponent implements OnInit, OnDestroy {
   public btnDisabled: boolean = false;
   public form: FormGroup;
   public allSeries: any[] = [];
+  public allSeriesClient: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private seriesApiClient: AdminApiSeriesApiClient,
     private postApiClient: AdminApiPostApiClient,
     private utilService: UtilityService,
-    private config: DynamicDialogConfig
+    private config: DynamicDialogConfig,
+    private ref: DynamicDialogRef
   ) {}
 
   // Validate
@@ -66,6 +67,7 @@ export class PostSeriesComponent implements OnInit, OnDestroy {
               label: element.name,
             });
           });
+          this.allSeriesClient = this.allSeries;
           if (!this.utilService.isEmpty(this.config.data?.id)) {
             this.loadSeries(this.config.data.id);
           } else {
@@ -90,7 +92,34 @@ export class PostSeriesComponent implements OnInit, OnDestroy {
 
   removeSeries(id: string): void {}
 
-  saveChange(): void {}
+  saveChange(): void {
+    this.toggleBlockUI(true);
+    this.saveData();
+  }
+
+  private saveData(): void {
+    if (this.utilService.isEmpty(this.config.data?.id)) {
+      this.seriesApiClient
+        .createSeries(this.form.value)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: () => {
+            this.ref.close(this.form.value);
+          },
+          complete: () => this.toggleBlockUI(false),
+        });
+    } else {
+      this.seriesApiClient
+        .updateSeries(this.config.data.id, this.form.value)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe({
+          next: () => {
+            this.ref.close(this.form.value);
+          },
+          complete: () => this.toggleBlockUI(false),
+        });
+    }
+  }
 
   private toggleBlockUI(enabled: boolean) {
     if (enabled) {

@@ -29,6 +29,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public thumbnailImage: any;
   public postCategories: any[] = [];
+  public postCate: any[] = [];
 
   selectedEntity = {} as PostDto;
 
@@ -67,6 +68,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               label: element.name,
             });
           });
+          this.postCate = this.postCategories;
           if (!this.utilService.isEmpty(this.config.data?.id)) {
             this.loadFormDetails(this.config.data.id);
           } else {
