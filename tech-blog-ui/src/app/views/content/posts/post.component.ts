@@ -15,6 +15,7 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { ConfirmationService } from 'primeng/api';
 import { PostSeriesComponent } from './post-series.component';
+import { PageEvent } from 'src/app/shared/models/page-event.model';
 
 interface PostCategoryClient {
   value: string;
@@ -167,15 +168,45 @@ export class PostComponent implements OnInit, OnDestroy {
     });
   }
 
-  pageChanged(event): void {}
+  pageChanged(event: PageEvent): void {
+    this.pageIndex = event.page;
+    this.pageSize = event.rows;
+    this.loadData();
+  }
 
   showLogs(id: string): void {}
 
   reject(id: string): void {}
 
-  sendToApprove(id: string): void {}
+  sendToApprove(id: string): void {
+    this.toggleBlockUI(true);
+    this.postApiClient
+      .sendToApprove(id)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: () => {
+          this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+          this.selectedItems = [];
+          this.loadData();
+        },
+        complete: () => this.toggleBlockUI(false),
+      });
+  }
 
-  approve(id: string): void {}
+  approve(id: string): void {
+    this.toggleBlockUI(true);
+    this.postApiClient
+      .approvePost(id)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: () => {
+          this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+          this.loadData();
+          this.selectedItems = [];
+        },
+        complete: () => this.toggleBlockUI(false),
+      });
+  }
 
   addToSeries(id: string): void {
     const ref = this.dialogService.open(PostSeriesComponent, {
@@ -183,7 +214,7 @@ export class PostComponent implements OnInit, OnDestroy {
         id: id,
       },
       header: 'Thêm vào loạt bài',
-      width: '50%',
+      width: '60%',
     });
     const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
     const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;

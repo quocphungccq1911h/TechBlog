@@ -8,10 +8,12 @@ import {
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import {
+  AddPostSeriesRequest,
   AdminApiPostApiClient,
   AdminApiSeriesApiClient,
   SeriesInListDto,
 } from 'src/app/api/admin-api.service.generated';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { UtilityService } from 'src/app/shared/services/utility.service';
 
 @Component({
@@ -33,7 +35,8 @@ export class PostSeriesComponent implements OnInit, OnDestroy {
     private postApiClient: AdminApiPostApiClient,
     private utilService: UtilityService,
     private config: DynamicDialogConfig,
-    private ref: DynamicDialogRef
+    private ref: DynamicDialogRef,
+    private alertService: AlertService
   ) {}
 
   // Validate
@@ -63,7 +66,7 @@ export class PostSeriesComponent implements OnInit, OnDestroy {
           const series = repsonse.series as SeriesInListDto[];
           series.forEach((element) => {
             this.allSeries.push({
-              values: element.id,
+              value: element.id,
               label: element.name,
             });
           });
@@ -98,27 +101,24 @@ export class PostSeriesComponent implements OnInit, OnDestroy {
   }
 
   private saveData(): void {
-    if (this.utilService.isEmpty(this.config.data?.id)) {
-      this.seriesApiClient
-        .createSeries(this.form.value)
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe({
-          next: () => {
-            this.ref.close(this.form.value);
-          },
-          complete: () => this.toggleBlockUI(false),
-        });
-    } else {
-      this.seriesApiClient
-        .updateSeries(this.config.data.id, this.form.value)
-        .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe({
-          next: () => {
-            this.ref.close(this.form.value);
-          },
-          complete: () => this.toggleBlockUI(false),
-        });
-    }
+    this.toggleBlockUI(true);
+    const body: AddPostSeriesRequest = new AddPostSeriesRequest({
+      postId: this.config.data.id,
+      seriesId: this.form.controls['seriesId'].value,
+      sortOrder: this.form.controls['sortOrder'].value,
+    });
+    this.seriesApiClient
+      .addPostSeries(body)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: () => {
+          this.alertService.showSuccess('Đã thêm bài viết thành công');
+          this.loadSeries(this.config.data.id);
+        },
+        complete: () => {
+          this.toggleBlockUI(false);
+        },
+      });
   }
 
   private toggleBlockUI(enabled: boolean) {

@@ -12,6 +12,7 @@ import { CommonConstants } from 'src/app/shared/constants/common.constants';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { SeriesDetailComponent } from './series-detail.component';
 import { MessageConstants } from 'src/app/shared/constants/messages.constants';
+import { PageEvent } from 'src/app/shared/models/page-event.model';
 
 @Component({
   templateUrl: 'series.component.html',
@@ -45,7 +46,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  loadData(): void {
+  loadData(selectionId = null): void {
     this.toggleBlockUI(true);
     this.seriesApiClient
       .getSeriesPaging(this.keyword, this.pageIndex, this.pageSize)
@@ -80,11 +81,31 @@ export class SeriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  showEditModal(): void {}
+  showEditModal(): void {
+    const ref = this.dialogService.open(SeriesDetailComponent, {
+      data: {
+        id: this.selectedItems[0].id,
+      },
+      header: 'Cập nhật series bài viết',
+      width: '80%',
+      position: 'top-right',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: SeriesDto) => {
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData(data.id);
+      }
+    });
+  }
 
   deleteItems(): void {}
 
-  pageChanged(event: any) {
+  pageChanged(event: PageEvent) {
     console.log(event);
   }
 

@@ -12,6 +12,7 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { ConfirmationService } from 'primeng/api';
 import { PermissionGrantComponent } from './permission-grant.component';
+import { PageEvent } from 'src/app/shared/models/page-event.model';
 
 @Component({
   selector: 'app-role',
@@ -166,7 +167,7 @@ export class RoleComponent implements OnInit, OnDestroy {
     });
   }
 
-  pageChanged(event): void {
+  pageChanged(event: PageEvent): void {
     this.pageIndex = event.page;
     this.pageSize = event.rows;
     this.loadData();

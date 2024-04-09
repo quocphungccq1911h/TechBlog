@@ -14,6 +14,7 @@ import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { UserDetailComponent } from './user-detail.component';
 import { RoleAssignComponent } from './role-assign.component';
 import { ChangeEmailComponent } from './change-email.component';
+import { PageEvent } from 'src/app/shared/models/page-event.model';
 
 @Component({
   selector: 'app-user',
@@ -65,7 +66,7 @@ export class UserComponent implements OnInit, OnDestroy {
         complete: () => this.toggleBlockUI(false),
       });
   }
-  pageChanged(event: any): void {
+  pageChanged(event: PageEvent): void {
     console.log(event);
     this.pageIndex = event.page + 1;
     this.pageSize = event.rows;
