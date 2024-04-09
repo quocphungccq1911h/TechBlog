@@ -12,6 +12,8 @@ import { PostDetailComponent } from './posts/post-detail.component';
 import { PostSeriesComponent } from './posts/post-series.component';
 import { SeriesComponent } from './series/series.component';
 import { SeriesDetailComponent } from './series/series-detail.component';
+import { PostReturnReasonComponent } from './posts/post-return-reason.component';
+import { PostActivityLogsComponent } from './posts/post-activity-logs.component';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BlockUIModule } from 'primeng/blockui';
@@ -67,6 +69,8 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
     PostSeriesComponent,
     SeriesComponent,
     SeriesDetailComponent,
+    PostReturnReasonComponent,
+    PostActivityLogsComponent,
   ],
 })
 export class ContentModule {}

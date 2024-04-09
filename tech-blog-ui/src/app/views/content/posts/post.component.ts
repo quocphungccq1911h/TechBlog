@@ -16,6 +16,8 @@ import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { ConfirmationService } from 'primeng/api';
 import { PostSeriesComponent } from './post-series.component';
 import { PageEvent } from 'src/app/shared/models/page-event.model';
+import { PostReturnReasonComponent } from './post-return-reason.component';
+import { PostActivityLogsComponent } from './post-activity-logs.component';
 
 interface PostCategoryClient {
   value: string;
@@ -174,9 +176,47 @@ export class PostComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
-  showLogs(id: string): void {}
+  showLogs(id: string): void {
+    const ref = this.dialogService.open(PostActivityLogsComponent, {
+      data: {
+        id: id,
+      },
+      header: 'Xem lịch sử',
+      width: '70%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: PostDto) => {
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData(data.id);
+      }
+    });
+  }
 
-  reject(id: string): void {}
+  reject(id: string): void {
+    const ref = this.dialogService.open(PostReturnReasonComponent, {
+      data: {
+        id: id,
+      },
+      header: 'Trả lại bài',
+      width: '60%',
+    });
+    const dialogRef = this.dialogService.dialogComponentRefMap.get(ref);
+    const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
+    const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
+    dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
+    ref.onClose.subscribe((data: PostDto) => {
+      if (data) {
+        this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+        this.selectedItems = [];
+        this.loadData(data.id);
+      }
+    });
+  }
 
   sendToApprove(id: string): void {
     this.toggleBlockUI(true);

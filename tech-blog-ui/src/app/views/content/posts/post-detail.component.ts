@@ -190,7 +190,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         Validators.required
       ),
       seoDescription: new FormControl(
-        this.selectedEntity.thumbnail || null,
+        this.selectedEntity.seoDescription || null,
         Validators.required
       ),
       tags: new FormControl(this.selectedEntity.tags || null),
