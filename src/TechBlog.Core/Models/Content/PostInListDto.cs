@@ -12,6 +12,9 @@ namespace TechBlog.Core.Models.Content
         public string? Thumbnail { get; set; }
         public int ViewCount { get; set; }
         public DateTime DateCreated { get; set; }
+        public bool IsPaid { get; set; }
+        public double RoyaltyAmount { get; set; }
+        public DateTime? PaidDate { get; set; }
         public class AutoMapperPostInListDtoProfiles : Profile
         {
             public AutoMapperPostInListDtoProfiles()

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TechBlog.Core.Domain.Content;
 using TechBlog.Core.Domain.Identity;
+using TechBlog.Core.Domain.Royalty;
 using TechBlog.Utilities.Constants;
 
 namespace TechBlog.Data
@@ -17,6 +18,7 @@ namespace TechBlog.Data
         public DbSet<PostActivityLog> PostActivityLogs { get; set; }
         public DbSet<Series> Series { get; set; }
         public DbSet<PostInSeries> PostInSeries { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

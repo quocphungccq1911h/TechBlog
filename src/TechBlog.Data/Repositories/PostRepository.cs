@@ -148,5 +148,11 @@ namespace TechBlog.Data.Repositories
             post.Status = PostStatus.WaitingForApproval;
             _context.Posts.Update(post);
         }
+
+        public async Task<List<Post>> GetListUnpaidPublishPosts(Guid userId)
+        {
+            return await _context.Posts
+                .Where(x=>x.AuthorUserId == userId && !x.IsPaid && x.Status == PostStatus.Published).ToListAsync();
+        }
     }
 }

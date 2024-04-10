@@ -16,6 +16,7 @@ namespace TechBlog.Data.SeedWorks
 
         public ISeriesRepository Series { get; private set; } = new SeriesRepository(context, mapper);
 
+        public ITransactionRepository Transactions { get; private set; } = new TransactionRepository(context, mapper);
 
         public async Task<int> CompleteAsync()
         {
