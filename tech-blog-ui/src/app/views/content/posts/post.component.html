@@ -78,15 +78,15 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 10px">
+            <th scope="col" style="width: 10px">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th>Tiêu đề</th>
-            <th>Danh mục</th>
-            <th>Lượt xem</th>
-            <th>Ngày tạo</th>
-            <th style="width: 150px">Xuất bản</th>
-            <th></th>
+            <th scope="col">Tiêu đề</th>
+            <th scope="col">Danh mục</th>
+            <th scope="col">Lượt xem</th>
+            <th scope="col">Ngày tạo</th>
+            <th scope="col" style="width: 150px">Xuất bản</th>
+            <th scope="col"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
