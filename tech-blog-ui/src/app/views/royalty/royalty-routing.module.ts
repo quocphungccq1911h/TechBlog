@@ -4,7 +4,7 @@ import { RoyaltyMonthComponent } from './royalty-month/royalty-month.component';
 import { AuthGuard } from './../../shared/auth.guard';
 import { RoyaltyUserComponent } from './royalty-user/royalty-user.component';
 import { TransactionComponent } from './transactions/transactions.component';
-import { Transactions } from '../../shared/constants/permissions.constants';
+import { Royalty } from './../../shared/constants/permissions.constants';
 
 const routes: Routes = [
   {
@@ -17,7 +17,7 @@ const routes: Routes = [
     component: RoyaltyMonthComponent,
     data: {
       title: 'Thống kê tháng',
-      requiredPolicy: Transactions.VIEW,
+      requiredPolicy: Royalty.VIEW,
     },
     canActivate: [AuthGuard],
   },
@@ -26,7 +26,7 @@ const routes: Routes = [
     component: RoyaltyUserComponent,
     data: {
       title: 'Thống kê tác giả',
-      requiredPolicy: Transactions.VIEW,
+      requiredPolicy: Royalty.VIEW,
     },
     canActivate: [AuthGuard],
   },
@@ -35,7 +35,7 @@ const routes: Routes = [
     component: TransactionComponent,
     data: {
       title: 'Giao dịch',
-      requiredPolicy: Transactions.VIEW,
+      requiredPolicy: Royalty.VIEW,
     },
     canActivate: [AuthGuard],
   },
