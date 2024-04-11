@@ -6,6 +6,7 @@ import {
   SeriesPermissions,
   RolePermissions,
   UserPermissions,
+  Transactions,
 } from 'src/app/shared/constants/permissions.constants';
 
 export const navItems: INavData[] = [
@@ -47,16 +48,36 @@ export const navItems: INavData[] = [
           policyName: SeriesPermissions.VIEW,
         },
       },
+    ],
+  },
+  {
+    name: 'Nhuận bút',
+    url: '/royalty',
+    iconComponent: { name: 'cil-puzzle' },
+    children: [
       {
-        name: 'Nhuận bút',
-        url: '/content/royalty',
+        name: 'Thống kê tháng',
+        url: '/royalty/royalty-month',
         attributes: {
-          policyName: 'Permissions.Loyalty.View',
+          policyName: Transactions.VIEW,
+        },
+      },
+      {
+        name: 'Thống kê tác giả',
+        url: '/royalty/royalty-user',
+        attributes: {
+          policyName: Transactions.VIEW,
+        },
+      },
+      {
+        name: 'Giao dịch',
+        url: '/royalty/transactions',
+        attributes: {
+          policyName: Transactions.VIEW,
         },
       },
     ],
   },
-
   {
     name: 'Hệ thống',
     url: '/system',

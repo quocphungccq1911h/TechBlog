@@ -212,6 +212,9 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       avatarFile: new FormControl(null),
       avatar: new FormControl(this.selectEntity.avatar || null),
       isActive: new FormControl(this.selectEntity.isActive || false),
+      royaltyAmountPerPost: new FormControl(
+        this.selectEntity.royaltyAmountPerPost
+      ),
     });
   }
 

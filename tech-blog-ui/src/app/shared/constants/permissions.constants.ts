@@ -43,3 +43,8 @@ export class Series {
   public static readonly EDIT = 'Permissions.Series.Edit';
   public static readonly DELETE = 'Permissions.Series.Delete';
 }
+
+export class Transactions {
+  public static readonly VIEW = 'Permissions.Transactions.View';
+  public static readonly DELETE = 'Permissions.Transactions.Delete';
+}

@@ -3165,6 +3165,7 @@ export class CreateUserRequest implements ICreateUserRequest {
     dob?: Date | undefined;
     avatar?: string | undefined;
     isActive?: boolean;
+    royaltyAmountPerPost?: number;
 
     constructor(data?: ICreateUserRequest) {
         if (data) {
@@ -3186,6 +3187,7 @@ export class CreateUserRequest implements ICreateUserRequest {
             this.dob = _data["dob"] ? new Date(_data["dob"].toString()) : <any>undefined;
             this.avatar = _data["avatar"];
             this.isActive = _data["isActive"];
+            this.royaltyAmountPerPost = _data["royaltyAmountPerPost"];
         }
     }
 
@@ -3207,6 +3209,7 @@ export class CreateUserRequest implements ICreateUserRequest {
         data["dob"] = this.dob ? this.dob.toISOString() : <any>undefined;
         data["avatar"] = this.avatar;
         data["isActive"] = this.isActive;
+        data["royaltyAmountPerPost"] = this.royaltyAmountPerPost;
         return data;
     }
 }
@@ -3221,6 +3224,7 @@ export interface ICreateUserRequest {
     dob?: Date | undefined;
     avatar?: string | undefined;
     isActive?: boolean;
+    royaltyAmountPerPost?: number;
 }
 
 export class LoginRequest implements ILoginRequest {
@@ -3511,6 +3515,9 @@ export class PostDto implements IPostDto {
     thumbnail?: string | undefined;
     viewCount?: number;
     dateCreated?: Date;
+    isPaid?: boolean;
+    royaltyAmount?: number;
+    paidDate?: Date | undefined;
     categoryId?: string;
     content?: string | undefined;
     authorUserId?: string;
@@ -3518,8 +3525,6 @@ export class PostDto implements IPostDto {
     tags?: string | undefined;
     seoDescription?: string | undefined;
     dateModified?: Date | undefined;
-    isPaid?: boolean;
-    royaltyAmount?: number;
     status?: PostStatus;
 
     constructor(data?: IPostDto) {
@@ -3540,6 +3545,9 @@ export class PostDto implements IPostDto {
             this.thumbnail = _data["thumbnail"];
             this.viewCount = _data["viewCount"];
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
+            this.isPaid = _data["isPaid"];
+            this.royaltyAmount = _data["royaltyAmount"];
+            this.paidDate = _data["paidDate"] ? new Date(_data["paidDate"].toString()) : <any>undefined;
             this.categoryId = _data["categoryId"];
             this.content = _data["content"];
             this.authorUserId = _data["authorUserId"];
@@ -3547,8 +3555,6 @@ export class PostDto implements IPostDto {
             this.tags = _data["tags"];
             this.seoDescription = _data["seoDescription"];
             this.dateModified = _data["dateModified"] ? new Date(_data["dateModified"].toString()) : <any>undefined;
-            this.isPaid = _data["isPaid"];
-            this.royaltyAmount = _data["royaltyAmount"];
             this.status = _data["status"];
         }
     }
@@ -3569,6 +3575,9 @@ export class PostDto implements IPostDto {
         data["thumbnail"] = this.thumbnail;
         data["viewCount"] = this.viewCount;
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
+        data["isPaid"] = this.isPaid;
+        data["royaltyAmount"] = this.royaltyAmount;
+        data["paidDate"] = this.paidDate ? this.paidDate.toISOString() : <any>undefined;
         data["categoryId"] = this.categoryId;
         data["content"] = this.content;
         data["authorUserId"] = this.authorUserId;
@@ -3576,8 +3585,6 @@ export class PostDto implements IPostDto {
         data["tags"] = this.tags;
         data["seoDescription"] = this.seoDescription;
         data["dateModified"] = this.dateModified ? this.dateModified.toISOString() : <any>undefined;
-        data["isPaid"] = this.isPaid;
-        data["royaltyAmount"] = this.royaltyAmount;
         data["status"] = this.status;
         return data;
     }
@@ -3591,6 +3598,9 @@ export interface IPostDto {
     thumbnail?: string | undefined;
     viewCount?: number;
     dateCreated?: Date;
+    isPaid?: boolean;
+    royaltyAmount?: number;
+    paidDate?: Date | undefined;
     categoryId?: string;
     content?: string | undefined;
     authorUserId?: string;
@@ -3598,8 +3608,6 @@ export interface IPostDto {
     tags?: string | undefined;
     seoDescription?: string | undefined;
     dateModified?: Date | undefined;
-    isPaid?: boolean;
-    royaltyAmount?: number;
     status?: PostStatus;
 }
 
@@ -3611,6 +3619,9 @@ export class PostInListDto implements IPostInListDto {
     thumbnail?: string | undefined;
     viewCount?: number;
     dateCreated?: Date;
+    isPaid?: boolean;
+    royaltyAmount?: number;
+    paidDate?: Date | undefined;
 
     constructor(data?: IPostInListDto) {
         if (data) {
@@ -3630,6 +3641,9 @@ export class PostInListDto implements IPostInListDto {
             this.thumbnail = _data["thumbnail"];
             this.viewCount = _data["viewCount"];
             this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
+            this.isPaid = _data["isPaid"];
+            this.royaltyAmount = _data["royaltyAmount"];
+            this.paidDate = _data["paidDate"] ? new Date(_data["paidDate"].toString()) : <any>undefined;
         }
     }
 
@@ -3649,6 +3663,9 @@ export class PostInListDto implements IPostInListDto {
         data["thumbnail"] = this.thumbnail;
         data["viewCount"] = this.viewCount;
         data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
+        data["isPaid"] = this.isPaid;
+        data["royaltyAmount"] = this.royaltyAmount;
+        data["paidDate"] = this.paidDate ? this.paidDate.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -3661,6 +3678,9 @@ export interface IPostInListDto {
     thumbnail?: string | undefined;
     viewCount?: number;
     dateCreated?: Date;
+    isPaid?: boolean;
+    royaltyAmount?: number;
+    paidDate?: Date | undefined;
 }
 
 export class PostInListDtoPagedResult implements IPostInListDtoPagedResult {
@@ -4237,6 +4257,7 @@ export class UpdateUserRequest implements IUpdateUserRequest {
     dob?: Date | undefined;
     avatar?: string | undefined;
     isActive?: boolean;
+    royaltyAmountPerPost?: number;
 
     constructor(data?: IUpdateUserRequest) {
         if (data) {
@@ -4255,6 +4276,7 @@ export class UpdateUserRequest implements IUpdateUserRequest {
             this.dob = _data["dob"] ? new Date(_data["dob"].toString()) : <any>undefined;
             this.avatar = _data["avatar"];
             this.isActive = _data["isActive"];
+            this.royaltyAmountPerPost = _data["royaltyAmountPerPost"];
         }
     }
 
@@ -4273,6 +4295,7 @@ export class UpdateUserRequest implements IUpdateUserRequest {
         data["dob"] = this.dob ? this.dob.toISOString() : <any>undefined;
         data["avatar"] = this.avatar;
         data["isActive"] = this.isActive;
+        data["royaltyAmountPerPost"] = this.royaltyAmountPerPost;
         return data;
     }
 }
@@ -4284,6 +4307,7 @@ export interface IUpdateUserRequest {
     dob?: Date | undefined;
     avatar?: string | undefined;
     isActive?: boolean;
+    royaltyAmountPerPost?: number;
 }
 
 export class UserDto implements IUserDto {
@@ -4301,6 +4325,8 @@ export class UserDto implements IUserDto {
     vipStartDate?: Date | undefined;
     vipExpireDate?: Date | undefined;
     lastLoginDate?: Date | undefined;
+    balance?: number;
+    royaltyAmountPerPost?: number;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -4331,6 +4357,8 @@ export class UserDto implements IUserDto {
             this.vipStartDate = _data["vipStartDate"] ? new Date(_data["vipStartDate"].toString()) : <any>undefined;
             this.vipExpireDate = _data["vipExpireDate"] ? new Date(_data["vipExpireDate"].toString()) : <any>undefined;
             this.lastLoginDate = _data["lastLoginDate"] ? new Date(_data["lastLoginDate"].toString()) : <any>undefined;
+            this.balance = _data["balance"];
+            this.royaltyAmountPerPost = _data["royaltyAmountPerPost"];
         }
     }
 
@@ -4361,6 +4389,8 @@ export class UserDto implements IUserDto {
         data["vipStartDate"] = this.vipStartDate ? this.vipStartDate.toISOString() : <any>undefined;
         data["vipExpireDate"] = this.vipExpireDate ? this.vipExpireDate.toISOString() : <any>undefined;
         data["lastLoginDate"] = this.lastLoginDate ? this.lastLoginDate.toISOString() : <any>undefined;
+        data["balance"] = this.balance;
+        data["royaltyAmountPerPost"] = this.royaltyAmountPerPost;
         return data;
     }
 }
@@ -4380,6 +4410,8 @@ export interface IUserDto {
     vipStartDate?: Date | undefined;
     vipExpireDate?: Date | undefined;
     lastLoginDate?: Date | undefined;
+    balance?: number;
+    royaltyAmountPerPost?: number;
 }
 
 export class UserDtoPagedResult implements IUserDtoPagedResult {
