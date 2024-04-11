@@ -6,10 +6,7 @@
       [cSidebarToggle]="sidebarId"
       class="ps-1"
     >
-      <svg cIcon
-        name="cilMenu"
-        size="lg"
-      ></svg>
+      <svg cIcon name="cilMenu" size="lg"></svg>
     </button>
     <c-header-nav class="d-none d-lg-flex me-auto">
       <c-nav-item>
@@ -18,7 +15,9 @@
         </a>
       </c-nav-item>
       <c-nav-item>
-        <a cNavLink routerLink="/system/users" routerLinkActive="active">Người dùng</a>
+        <a cNavLink routerLink="/system/users" routerLinkActive="active"
+          >Người dùng</a
+        >
       </c-nav-item>
     </c-header-nav>
 
@@ -42,7 +41,6 @@
     <c-header-nav class="ms-3">
       <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
     </c-header-nav>
-
   </c-container>
   <c-header-divider></c-header-divider>
   <c-container [fluid]="true">
@@ -52,13 +50,7 @@
 
 <ng-template #userDropdown>
   <c-dropdown alignment="end" variant="nav-item">
-    <button
-      cButton
-      color=""
-      [caret]="false"
-      cDropdownToggle
-      class="py-0"
-    >
+    <button cButton color="" [caret]="false" cDropdownToggle class="py-0">
       <c-avatar
         cTextColor="primary"
         shape="rounded-1"
@@ -70,42 +62,34 @@
     </button>
     <ul cDropdownMenu class="pt-0 pr-5 w-auto">
       <li>
-        <h6 cDropdownHeader class="bg-light fw-semibold py-2">Account</h6>
+        <h6 cDropdownHeader class="bg-light fw-semibold py-2">Tài khoản</h6>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilBell"></svg>
-          Updates
-          <c-badge class="ms-2 float-end" color="info">
-            42
-          </c-badge>
+          Cập nhật
+          <c-badge class="ms-2 float-end" color="info"> 42 </c-badge>
         </a>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilEnvelopeOpen"></svg>
-          Messages
-          <c-badge class="ms-2 float-end" color="success">
-            42
-          </c-badge>
+          Tín nhắn
+          <c-badge class="ms-2 float-end" color="success"> 42 </c-badge>
         </a>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilTask"></svg>
-          Tasks
-          <c-badge class="ms-2 float-end" color="danger">
-            42
-          </c-badge>
+          Công việc
+          <c-badge class="ms-2 float-end" color="danger"> 42 </c-badge>
         </a>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
-          <svg cIcon class="me-2" name='cilCommentSquare'></svg>
-          Comments
-          <c-badge class="ms-auto" color="warning">
-            42
-          </c-badge>
+          <svg cIcon class="me-2" name="cilCommentSquare"></svg>
+          Bình luận
+          <c-badge class="ms-auto" color="warning"> 42 </c-badge>
         </a>
       </li>
       <li>
@@ -115,35 +99,31 @@
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilUser"></svg>
-          Profile
+          Thông tin
         </a>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilSettings"></svg>
-          Settings
+          Cài đặt
         </a>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilCreditCard"></svg>
-          Payments
-          <c-badge class="ms-2 float-end" color="secondary">
-            42
-          </c-badge>
+          Thanh toán
+          <c-badge class="ms-2 float-end" color="secondary"> 42 </c-badge>
         </a>
       </li>
       <li>
         <a routerLink="./" cDropdownItem>
           <svg cIcon class="me-2" name="cilFile"></svg>
-          Projects
-          <c-badge class="ms-2 float-end" color="primary">
-            42
-          </c-badge>
+          Dự án
+          <c-badge class="ms-2 float-end" color="primary"> 42 </c-badge>
         </a>
       </li>
       <li>
-        <hr cDropdownDivider/>
+        <hr cDropdownDivider />
       </li>
       <li>
         <a routerLink="./" (click)="logout()" cDropdownItem>
@@ -155,4 +135,3 @@
     </ul>
   </c-dropdown>
 </ng-template>
-
