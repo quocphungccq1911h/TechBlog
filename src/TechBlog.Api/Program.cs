@@ -14,9 +14,11 @@ using TechBlog.Core.ConfigOptions;
 using TechBlog.Core.Domain.Identity;
 using TechBlog.Core.Models.Content;
 using TechBlog.Core.SeedWorks;
+using TechBlog.Core.Services;
 using TechBlog.Data;
 using TechBlog.Data.Repositories;
 using TechBlog.Data.SeedWorks;
+using TechBlog.Data.Services;
 using TechBlog.Utilities.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +93,7 @@ builder.Services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<RoleManager<AppRole>, RoleManager<AppRole>>();
+builder.Services.AddScoped<IRoyaltyService, RoyaltyService>();
 
 //Default config for ASP.NET Core
 builder.Services.AddControllers();
